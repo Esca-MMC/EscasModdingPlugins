@@ -96,6 +96,15 @@ namespace EscasModdingPlugins
         /* IComparable method */
         /**********************/
 
-        public int CompareTo(object obj) => Priority.CompareTo(obj); //compare by priority values
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                return 1; //greater than null
+
+            if (obj is TileData data)
+                return this.Priority.CompareTo(data.Priority); //compare by priority values
+            else
+                throw new ArgumentException("Object is not TileData");
+        }
     }
 }
