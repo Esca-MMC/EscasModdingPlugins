@@ -44,9 +44,9 @@ Field | Value | Example | Required? | Description
 (entry key) | Any unique string | `"YourName.ExampleMod 1"` | Required | A unique key for this entry. Including your mod's [UniqueID](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Manifest) is recommended.
 Locations | A list of location names | `["Farm", "BusStop"]` | Required | A list of locations (maps) this entry will affect.
 TileAreas | A list of tile areas | `[ {"X":0, "Y":0, "Width":999, "Height":999} ]` | Required | A list of tile areas this entry will affect. The earlier example will affect the entire map.
-UseZone | Any integer | `-1` | Optional | In the affected areas, only fish with this "zone" ID in Data/Locations can be caught. Fish with `-1` can be caught in any zone.
-UseLocation | A location name | `"Mountain"` | Optional | Fish in the affected areas will come from the named location. Refer to the keys (location names) in the Data/Locations asset.
-UseOceanCrabPots | true or false | `false` | Optional | Crab pots in the affected areas will catch "ocean" results if this is true, or "freshwater" results if this is false.
+UseZone | Any integer | `-1` | Optional | Only fish with this "zone" ID in Data/Locations can be caught here. Note: Fish with `-1` can be caught in any zone.
+UseLocation | A location name | `"Mountain"` | Optional | Fish caught here will come from this location's data. Refer to the keys (location names) in Data/Locations.
+UseOceanCrabPots | true or false | `false` | Optional | Crab pots here will catch "ocean" results if this is true, or "freshwater" results if this is false.
 Priority | Any integer | `0` | Optional | If a tile is affected by more than one entry, the entry will the highest priority will be used. 0 if not provided.
 
 Below is an example content.json file for a Content Patcher mod. It modifies some areas of the Farm to catch fish from the Forest's river, and crab pots there will catch "freshwater" results.
@@ -81,9 +81,9 @@ The property's value uses this format: `<UseZone> [UseLocation] [UseOceanCrabPot
 
 Field | Value | Example | Required? | Description
 ------|-------|---------|-----------|------------
-UseZone | Any integer | `-1` | Required | Only fish with this "zone" ID in Data/Locations can be caught here. Fish with `-1` can be caught in any zone.
-UseLocation | A location name | `Mountain` | Optional | Fish caught from this tile will come from this location. Refer to the keys (location names) in the Data/Locations asset.
-UseOceanCrabPots | true or false | `false` | Optional | Crab pots on this tile will catch "ocean" results if this is true, or "freshwater" results if this is false.
+UseZone | Any integer | `-1` | Required | Only fish with this "zone" ID in Data/Locations can be caught here. Note: Fish with `-1` can be caught in any zone.
+UseLocation | A location name | `Mountain` | Optional | Fish caught here will come from this location's data. Refer to the keys (location names) in Data/Locations.
+UseOceanCrabPots | true or false | `false` | Optional | Crab pots here will catch "ocean" results if this is true, or "freshwater" results if this is false.
 
 Below is an example tile property where fish will be caught from the Forest's river and pots will catch "freshwater" results: `-1 Forest false`
 
