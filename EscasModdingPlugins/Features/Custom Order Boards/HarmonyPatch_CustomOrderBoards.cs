@@ -86,6 +86,9 @@ namespace EscasModdingPlugins
 							}
 						};
 					});
+
+					__result = true; //override the result (indicating that an action was performed successfully)
+					return;
 				}
 				else //if a valid order type parameter was NOT provided
                 {

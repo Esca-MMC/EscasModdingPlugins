@@ -1,0 +1,129 @@
+﻿using Microsoft.Xna.Framework;
+using StardewModdingAPI;
+using StardewModdingAPI.Utilities;
+using StardewValley;
+using StardewValley.Menus;
+using System;
+using System.Collections.Generic;
+using xTile;
+using xTile.Tiles;
+using xTile.ObjectModel;
+using xTile.Format;
+using xTile.Display;
+using xTile.Dimensions;
+using xTile.Layers;
+using System.Linq;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace EscasModdingPlugins
+{
+    /// <summary></summary>
+    public static class DisplayNewOrderExclamationPoint
+    {
+        /// <summary>True if these commands are currently enabled.</summary>
+		public static bool Enabled { get; private set; } = false;
+        /// <summary>The helper instance to use for API access.</summary>
+        private static IModHelper Helper { get; set; } = null;
+        /// <summary>The monitor instance to use for console/log messages.</summary>
+        private static IMonitor Monitor { get; set; } = null;
+
+        /// <summary>Initializes this class's SMAPI console commands.</summary>
+        /// <param name="helper">The helper instance to use for API access.</param>
+        /// <param name="monitor">The monitor instance to use for console/log messages.</param>
+        public static void Enable(IModHelper helper, IMonitor monitor)
+        {
+            if (Enabled)
+                return; //do nothing
+
+            //store args
+            Helper = helper;
+            Monitor = monitor;
+
+            //initialize events
+            helper.Events.Player.Warped += Warped_UpdateTileList;
+            helper.Events.GameLoop.DayStarted += DayStarted_UpdateTileList;
+            helper.Events.Display.RenderedWorld += RenderedWorld_DrawExclamationPoints;
+        }
+
+        private static void DayStarted_UpdateTileList(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
+        {
+            UpdateTileList(Game1.player.currentLocation); //update for the current player's location
+        }
+
+        private static void Warped_UpdateTileList(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
+        {
+            if (!e.IsLocalPlayer) //if the warping player is NOT the current local player
+                return;
+
+            UpdateTileList(e.NewLocation); //update for the current player's new location
+        }
+
+        private static void RenderedWorld_DrawExclamationPoints(object sender, StardewModdingAPI.Events.RenderedWorldEventArgs e)
+        {
+            if (!Context.IsPlayerFree) //if the plyer is NOT free (events, menus, etc)
+                return; //do nothing
+
+            foreach (ExclamationData point in ExclamationPointTiles.Value) //for each exclamation point to draw
+            {
+                if (!Game1.player.team.acceptedSpecialOrderTypes.Contains(point.OrderType)) //if the players do NOT already have an active order of this type
+                {
+                    //draw the exclamation point (imitate code from Town.draw(SpriteBatch))
+                    float yOffset = 4f * (float)Math.Round(Math.Sin(Game1.currentGameTime.TotalGameTime.TotalMilliseconds / 250.0), 2);
+                    e.SpriteBatch.Draw(Game1.mouseCursors, Game1.GlobalToLocal(Game1.viewport, new Vector2(point.Tile.X, point.Tile.Y + yOffset)), SourceRectangle, Color.White, 0f, new Vector2(1f, 4f), 4f + Math.Max(0f, 0.25f - yOffset / 16f), SpriteEffects.None, 1f);
+                }
+            }
+        }
+
+        /// <summary>The spritesheet rectangle for the draw event, cached here for minor optimization purposes.</summary>
+        private static Microsoft.Xna.Framework.Rectangle SourceRectangle = new Microsoft.Xna.Framework.Rectangle(395, 497, 3, 8);
+
+        /// <summary>A list of tiles where "available orders" indicators should be displayed if applicable. One instance per local player (e.g. splitscreen mode).</summary>
+        private static PerScreen<List<ExclamationData>> ExclamationPointTiles { get; set; } = new PerScreen<List<ExclamationData>>(() => new List<ExclamationData>()); //initialize a blank list for each local player
+
+        private class ExclamationData
+        {
+            public Vector2 Tile;
+            public string OrderType;
+
+            public ExclamationData(Vector2 tile, string orderType)
+            {
+                Tile = tile;
+                OrderType = orderType;
+            }
+        }
+
+        /// <summary>Updates <see cref="ExclamationPointTiles"/> based on the given location's tile properties.</summary>
+        /// <param name="location">The current player's location.</param>
+        private static void UpdateTileList(GameLocation location)
+        {
+            ExclamationPointTiles.Value.Clear(); //clear the local player's list
+
+            try
+            {
+                if (location?.Map.GetLayer("Buildings") is Layer layer) //if this location exists and has a Buildings layer
+                {
+                    //search every tile for "Action" properties
+                    for (int x = 0; x < layer.LayerSize.Width; x++)
+                    {
+                        for (int y = 0; y < layer.LayerSize.Height; y++)
+                        {
+                            if (location.doesTileHaveProperty(x, y, "Action", "Buildings") is string actionProperty) //if this tile has an Action property
+                            {
+                                string[] args = actionProperty.Split(' ');
+                                if (args.Length > 2 && args[0].Equals("CustomBoard", StringComparison.OrdinalIgnoreCase) && args[2].Equals("true"))
+                                {
+                                    Vector2 position = new Vector2((x * 64f) + 32f, (y * 64f) - 32f); //get pixel position for this tile, make cosmetic adjustments
+                                    ExclamationPointTiles.Value.Add(new ExclamationData(position, args[1])); //add this tile + order type to the list
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Monitor.LogOnce($"Something went wrong while trying to find custom order board exclamantion points. Full error message: {ex.ToString()}", LogLevel.Error);
+            }
+        }
+    }
+}

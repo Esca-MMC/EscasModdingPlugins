@@ -1,30 +1,11 @@
-﻿using System;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewValley;
-using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
-using StardewValley.TerrainFeatures;
-using Microsoft.Xna.Framework;
-using StardewModdingAPI.Events;
-using StardewValley.Locations;
-using StardewValley.Monsters;
-using System.Diagnostics;
-using StardewValley.Objects;
 using StardewValley.Menus;
-using Microsoft.Xna.Framework.Graphics;
-using StardewValley.Events;
-using StardewValley.Characters;
-using xTile.Dimensions;
-using Netcode;
-using StardewValley.Network;
-using System.Reflection.Emit;
-using System.Reflection;
-using xTile.ObjectModel;
-using StardewValley.GameData;
+using System;
 
 namespace EscasModdingPlugins
 {
+    /// <summary>Adds a SMAPI console command that opens a special orders board for a specified order type.</summary>
     public static class Command_CustomBoard
     {
         /// <summary>True if these commands are currently enabled.</summary>
