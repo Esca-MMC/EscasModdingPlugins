@@ -31,6 +31,9 @@ namespace EscasModdingPlugins
             helper.ConsoleCommands.Add("EMP", "Runs an EMP command. Type \"EMP\" or \"EMP help\" for details.", CustomBoard);
         }
 
+        /// <summary>Opens a special orders board for a custom order type.</summary>
+        /// <param name="command">The console command used when calling this method (e.g. "EMP").</param>
+        /// <param name="args">The arguments provided after the console command (e.g. "CustomBoard" "MyCustomOrders").</param>
         private static void CustomBoard(string command, string[] args)
         {
             if (args == null || args.Length == 0 || args[0].Equals("help", StringComparison.OrdinalIgnoreCase)) //args are null, blank, or "help"

@@ -19,10 +19,10 @@ namespace EscasModdingPlugins
 
             //apply patches, enable events and console commands
             Harmony harmony = new Harmony(ModManifest.UniqueID);
-            
+
             //fish locations
             HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
-            
+
             //custom order boards
             HarmonyPatch_CustomOrderBoards.ApplyPatch(harmony, Monitor);
             DisplayNewOrderExclamationPoint.Enable(helper, Monitor);
