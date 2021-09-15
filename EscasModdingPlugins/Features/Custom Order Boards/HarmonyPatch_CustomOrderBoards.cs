@@ -10,32 +10,32 @@ using xTile.Dimensions;
 
 namespace EscasModdingPlugins
 {
-    /// <summary>Allows map modders to create basic <see cref="SpecialOrdersBoard"/> with a custom "order type", i.e. a separate pool of special orders.</summary>
-    /// <remarks>
-    /// This class's goals:
-    /// 1. Add a value to the Action tile property on the Buildings layer, allowing tiles to load the <see cref="SpecialOrdersBoard"/> menu with a custom "type" argument
-    /// 2. Add additional loading logic for non-default order types, allowing access to non-default order types (only "" and "Qi" load/update by default)
-    /// </remarks>
-    public static class HarmonyPatch_CustomOrderBoards
-    {
+	/// <summary>Allows map modders to create basic <see cref="SpecialOrdersBoard"/> with a custom "order type", i.e. a separate pool of special orders.</summary>
+	/// <remarks>
+	/// This class's goals:
+	/// 1. Add a value to the Action tile property on the Buildings layer, allowing tiles to load the <see cref="SpecialOrdersBoard"/> menu with a custom "type" argument
+	/// 2. Add additional loading logic for non-default order types, allowing access to non-default order types (only "" and "Qi" load/update by default)
+	/// </remarks>
+	public static class HarmonyPatch_CustomOrderBoards
+	{
 		/// <summary>The short (not prefixed with mod ID) name of this patch's "Action" tile property value.</summary>
 		public static string ShortActionName { get; set; } = "CustomBoard";
 
 		/// <summary>True if this patch is currently applied.</summary>
 		public static bool Applied { get; private set; } = false;
-        /// <summary>The monitor instance to use for log messages. Null if not provided.</summary>
-        private static IMonitor Monitor { get; set; } = null;
+		/// <summary>The monitor instance to use for log messages. Null if not provided.</summary>
+		private static IMonitor Monitor { get; set; } = null;
 
 		/// <summary>Applies this Harmony patch to the game.</summary>
 		/// <param name="harmony">The <see cref="Harmony"/> created with this mod's ID.</param>
 		/// <param name="monitor">The <see cref="IMonitor"/> provided to this mod by SMAPI. Used for log messages.</param>
 		public static void ApplyPatch(Harmony harmony, IMonitor monitor)
-        {
+		{
 			if (Applied)
 				return;
-            
+
 			//store args
-            Monitor = monitor;
+			Monitor = monitor;
 
 			Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing SDV method \"GameLocation.PerformAction(string, Farmer, Location)\".", LogLevel.Trace);
 			harmony.Patch(
@@ -44,30 +44,30 @@ namespace EscasModdingPlugins
 			);
 
 			Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing SDV method \"SpecialOrder.UpdateAvailableSpecialOrders(bool)\".", LogLevel.Trace);
-            harmony.Patch(
-                original: AccessTools.Method(typeof(SpecialOrder), nameof(SpecialOrder.UpdateAvailableSpecialOrders), new[] { typeof(bool) }),
-                postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(SpecialOrder_UpdateAvailableSpecialOrders))
-            );
+			harmony.Patch(
+				original: AccessTools.Method(typeof(SpecialOrder), nameof(SpecialOrder.UpdateAvailableSpecialOrders), new[] { typeof(bool) }),
+				postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(SpecialOrder_UpdateAvailableSpecialOrders))
+			);
 
 			Applied = true;
-        }
+		}
 
 		/// <summary>Adds the "CustomBoard" action type for the Buildings layer "Action" property.</summary>
-		/// <param name="action"></param>
-		/// <param name="who"></param>
-		/// <param name="__result"></param>
+		/// <param name="action">The value of the "Action" tile property being parsed.</param>
+		/// <param name="who">The farmer performing the action.</param>
+		/// <param name="__result">True if an action was performed; false otherwise.</param>
 		private static void GameLocation_performAction(string action, Farmer who, ref bool __result)
-        {
+		{
 			try
-            {
+			{
 				if (__result || !who.IsLocalPlayer) //if an "Action" was already successful here, or the action was NOT taken by the current player
 					return; //do nothing
 
 				string[] actionParams = action.Split(' '); //split into parameters by spaces
-				
+
 				if ((actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ModEntry.PropertyPrefix + ShortActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
 					&& actionParams.Length > 1) //...and 2 parameters exist
-                {
+				{
 					string orderType = actionParams[1];
 
 					if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
@@ -91,10 +91,10 @@ namespace EscasModdingPlugins
 					return;
 				}
 				else //if a valid order type parameter was NOT provided
-                {
+				{
 					Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ModEntry.PropertyPrefix + ShortActionName} OrderType\".", LogLevel.Warn);
-                }
-            }
+				}
+			}
 			catch (Exception ex)
 			{
 				Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\" has encountered an error. Custom special order boards might not open correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
@@ -102,36 +102,36 @@ namespace EscasModdingPlugins
 			}
 		}
 
-        /// <summary>Loads 2 additional available orders of each EMP-specific order type.</summary>
-        private static void SpecialOrder_UpdateAvailableSpecialOrders()
-        {
-            try
-            {
-                var orderData = AssetHelper.GetAsset<Dictionary<string, SpecialOrderData>>("Data/SpecialOrders"); //load the special orders data
+		/// <summary>Loads 2 additional available orders of each EMP-specific order type.</summary>
+		private static void SpecialOrder_UpdateAvailableSpecialOrders()
+		{
+			try
+			{
+				var orderData = AssetHelper.GetAsset<Dictionary<string, SpecialOrderData>>("Data/SpecialOrders"); //load the special orders data
 				List<string> orderKeys = GetAvailableOrderKeys(orderData); //get a list of keys to use for new orders
-				
-                //get each distinct OrderType that starts with "Esca.EMP/"
-                HashSet<string> orderTypesEMP = new HashSet<string>(orderData.Select(entry => entry.Value.OrderType)
-                    .Where(t => t.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)));
 
-                foreach (string orderTypeEMP in orderTypesEMP) //for each EMP-specific order type
-                {
-                    LoadCustomOrderType(orderTypeEMP, orderData, orderKeys); //load 2 available orders of this type
-                }
-            }
-            catch (Exception ex)
-            {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\" has encountered an error. Special orders with custom OrderType values might not load correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
-                return; //run the original method
-            }
-        }
+				//get each distinct OrderType that starts with "Esca.EMP/"
+				HashSet<string> orderTypesEMP = new HashSet<string>(orderData.Select(entry => entry.Value.OrderType)
+					.Where(t => t.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)));
+
+				foreach (string orderTypeEMP in orderTypesEMP) //for each EMP-specific order type
+				{
+					LoadCustomOrderType(orderTypeEMP, orderData, orderKeys); //load 2 available orders of this type
+				}
+			}
+			catch (Exception ex)
+			{
+				Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\" has encountered an error. Special orders with custom OrderType values might not load correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
+				return; //run the original method
+			}
+		}
 
 		/// <summary>Gets a list of valid order keys for use when loading available special orders.</summary>
 		/// <remarks>Imitates logic from <see cref="SpecialOrder.UpdateAvailableSpecialOrders(bool)"/> to validate special order keys.</remarks>
 		/// <param name="order_data">Loaded data from the asset "Data/SpecialOrders".</param>
 		/// <returns>A list of each key from "Data/SpecialOrders" that should be available on special order boards.</returns>
 		private static List<string> GetAvailableOrderKeys(Dictionary<string, SpecialOrderData> order_data)
-        {
+		{
 			List<string> keys = new List<string>(order_data.Keys);
 			for (int k = 0; k < keys.Count; k++)
 			{
@@ -176,13 +176,13 @@ namespace EscasModdingPlugins
 		/// <param name="order_data">Loaded data from the asset "Data/SpecialOrders".</param>
 		/// <param name="keys">Valid keys for available orders. See <see cref="GetAvailableOrderKeys"/>.</param>
 		private static void LoadCustomOrderType(string customOrderType, Dictionary<string, SpecialOrderData> order_data, List<string> keys)
-        {
-            if (Game1.player.team.availableSpecialOrders.Any(order => order.orderType.Value == customOrderType)) //if any available orders already have this type
-                return; //do nothing
+		{
+			if (Game1.player.team.availableSpecialOrders.Any(order => order.orderType.Value == customOrderType)) //if any available orders already have this type
+				return; //do nothing
 
 			//imitate the original update method's loading logic, but load 2 orders of the custom type
 			//note that comments below indicate edited code (actual comments) or removed code (commented out)
-			
+
 			Random r = new Random((int)Game1.uniqueIDForThisGame + (int)((float)Game1.stats.DaysPlayed * 1.3f));
 			//Game1.player.team.availableSpecialOrders.Clear();
 			//string[] array = new string[2]{ "", "Qi" };
