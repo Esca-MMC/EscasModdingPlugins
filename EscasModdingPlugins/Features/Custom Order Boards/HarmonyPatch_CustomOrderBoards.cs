@@ -60,40 +60,44 @@ namespace EscasModdingPlugins
 		{
 			try
 			{
-				if (__result || !who.IsLocalPlayer) //if an "Action" was already successful here, or the action was NOT taken by the current player
+				if (__result || !who.IsLocalPlayer) //if this action was already performed/handled OR the action was NOT taken by the local player
 					return; //do nothing
 
 				string[] actionParams = action.Split(' '); //split into parameters by spaces
 
-				if ((actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ModEntry.PropertyPrefix + ShortActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
-					&& actionParams.Length > 1) //...and 2 parameters exist
+				if (actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ModEntry.PropertyPrefix + ShortActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
 				{
-					string orderType = actionParams[1];
-
-					if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
-						orderType = ModEntry.PropertyPrefix + orderType; //add that prefix
-
-					if (Monitor.IsVerbose)
-						Monitor.Log($"Opening special orders board with type \"{orderType}\".", LogLevel.Trace);
-
-					Game1.player.team.ordersBoardMutex.RequestLock(delegate //share the Town board's mutex lock (see the original method's "SpecialOrders" action)
+					if (actionParams.Length > 1) //if this action has at least 2 parameters
 					{
-						Game1.activeClickableMenu = new SpecialOrdersBoard(orderType) //open a board menu with the first parameter as its board type
-						{
-							behaviorBeforeCleanup = delegate //when the menu closes...
-							{
-								Game1.player.team.ordersBoardMutex.ReleaseLock(); //...release the mutex lock
-							}
-						};
-					});
+						string orderType = actionParams[1]; //use the second param as the order type
 
-					__result = true; //override the result (indicating that an action was performed successfully)
-					return;
+						if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
+							orderType = ModEntry.PropertyPrefix + orderType; //add that prefix before using it
+
+						if (Monitor.IsVerbose)
+							Monitor.Log($"Opening special orders board with type \"{orderType}\".", LogLevel.Trace);
+
+						Game1.player.team.ordersBoardMutex.RequestLock(delegate //share the Town board's mutex lock (see the original method's "SpecialOrders" action)
+						{
+							Game1.activeClickableMenu = new SpecialOrdersBoard(orderType) //open a board menu with the first parameter as its board type
+						{
+								behaviorBeforeCleanup = delegate //when the menu closes...
+								{
+									Game1.player.team.ordersBoardMutex.ReleaseLock(); //...release the mutex lock
+							}
+							};
+						});
+
+						__result = true; //override the result (indicating that an action was performed successfully)
+						return;
+					}
+					else //if a valid order type parameter was NOT provided
+					{
+						Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ModEntry.PropertyPrefix + ShortActionName} OrderType\".", LogLevel.Debug);
+					}
 				}
-				else //if a valid order type parameter was NOT provided
-				{
-					Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ModEntry.PropertyPrefix + ShortActionName} OrderType\".", LogLevel.Warn);
-				}
+
+				//if the action does not start with "CustomBoard" and is unrelated to this patch, do nothing
 			}
 			catch (Exception ex)
 			{
@@ -116,6 +120,8 @@ namespace EscasModdingPlugins
 
 				foreach (string orderTypeEMP in orderTypesEMP) //for each EMP-specific order type
 				{
+					if (Monitor.IsVerbose)
+						Monitor.Log($"Updating available special orders for custom order type: \"{orderTypeEMP}\"", LogLevel.Trace);
 					LoadCustomOrderType(orderTypeEMP, orderData, orderKeys); //load 2 available orders of this type
 				}
 			}

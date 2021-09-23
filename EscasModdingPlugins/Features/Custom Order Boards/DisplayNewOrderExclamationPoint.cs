@@ -110,7 +110,7 @@ namespace EscasModdingPlugins
             {
                 if (location?.Map.GetLayer("Buildings") is Layer layer) //if this location exists and has a Buildings layer
                 {
-                    //search every tile for "Action" properties
+                    //search every tile for "Buildings" layer tile properties matching this pattern: "Action" "CustomBoard <boardname> true"
                     for (int x = 0; x < layer.LayerSize.Width; x++)
                     {
                         for (int y = 0; y < layer.LayerSize.Height; y++)
@@ -120,8 +120,16 @@ namespace EscasModdingPlugins
                                 string[] args = actionProperty.Split(' ');
                                 if (args.Length > 2 && args[0].Equals("CustomBoard", StringComparison.OrdinalIgnoreCase) && args[2].Equals("true"))
                                 {
+                                    string orderType = args[1]; //use the second param as the order type
+
+                                    if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
+                                        orderType = ModEntry.PropertyPrefix + orderType; //add that prefix before using it
+
                                     Vector2 position = new Vector2((x * 64f) + 32f, (y * 64f) - 32f); //get pixel position for this tile, make cosmetic adjustments
-                                    ExclamationPointTiles.Value.Add(new ExclamationData(position, args[1])); //add this tile + order type to the list
+                                    ExclamationPointTiles.Value.Add(new ExclamationData(position, orderType)); //add this tile + order type to the list
+
+                                    if (Monitor.IsVerbose)
+                                        Monitor.Log($"CustomBoard tile with '!' notifications found. Tile: {x},{y}. Location: {location.Name}.", LogLevel.Trace);
                                 }
                             }
                         }
