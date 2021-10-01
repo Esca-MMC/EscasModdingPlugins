@@ -17,7 +17,7 @@ namespace EscasModdingPlugins
             AssetHelper.Initialize(helper);
             TileData.Monitor = Monitor;
 
-            //apply patches, enable events and console commands
+            //initialize Harmony and mod features
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
             //fish locations
@@ -27,6 +27,9 @@ namespace EscasModdingPlugins
             HarmonyPatch_CustomOrderBoards.ApplyPatch(harmony, Monitor);
             DisplayNewOrderExclamationPoint.Enable(helper, Monitor);
             Command_CustomBoard.Enable(helper, Monitor);
+
+            //destroyable bushes
+            HarmonyPatch_DestroyableBushes.ApplyPatch(harmony, Monitor);
         }
 
         /************************/

@@ -10,7 +10,7 @@ using xTile.Dimensions;
 
 namespace EscasModdingPlugins
 {
-	/// <summary>Allows map modders to create basic <see cref="SpecialOrdersBoard"/> with a custom "order type", i.e. a separate pool of special orders.</summary>
+	/// <summary>Allows map mods to create basic <see cref="SpecialOrdersBoard"/> with a custom "order type", i.e. a separate pool of special orders.</summary>
 	/// <remarks>
 	/// This class's goals:
 	/// 1. Add a value to the Action tile property on the Buildings layer, allowing tiles to load the <see cref="SpecialOrdersBoard"/> menu with a custom "type" argument
