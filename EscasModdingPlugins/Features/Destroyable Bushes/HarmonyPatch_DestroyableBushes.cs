@@ -7,7 +7,7 @@ using System;
 
 namespace EscasModdingPlugins
 {
-    /// <summary>Allows mods to designate bushes as destoryable in customizable areas. Uses map and/or tile properties.</summary>
+    /// <summary>Allows mods to designate areas where bushes are destroyable. Uses map and/or tile properties.</summary>
     public static class HarmonyPatch_DestroyableBushes
     {
         /// <summary>The name of the map property used by this patch.</summary>
@@ -52,7 +52,6 @@ namespace EscasModdingPlugins
         /// <param name="location">The location of the bush.</param>
         /// <param name="tile">The tile position of the bush. Typically its left-most "collision" tile.</param>
         /// <returns>True if bushes should be destroyable here; false otherwise.</returns>
-        [HarmonyPriority(Priority.Low)] //execute this AFTER most other postfixes (to reduce interference with similar patches, e.g. my Destroyable Bushes mod)
         public static bool ShouldBushesBeDestroyableHere(GameLocation location, Vector2 tile)
         {
             if (location == null)
@@ -84,9 +83,9 @@ namespace EscasModdingPlugins
                 if (Monitor?.IsVerbose == true)
                 {
                     if (result)
-                        Monitor.Log($"Allowing bush destruction. Location: {location?.Name}. Tile: {tile.X},{tile.Y}. Map property value: \"{tileProperty}\".", LogLevel.Trace);
+                        Monitor.Log($"Allowing bush destruction. Location: {location?.Name}. Tile: {tile.X},{tile.Y}. Map property value: \"{mapProperty}\".", LogLevel.Trace);
                     else
-                        Monitor.Log($"NOT allowing bush destruction. Location: {location?.Name}. Tile: {tile.X},{tile.Y}. Map property value: \"{tileProperty}\".", LogLevel.Trace);
+                        Monitor.Log($"NOT allowing bush destruction. Location: {location?.Name}. Tile: {tile.X},{tile.Y}. Map property value: \"{mapProperty}\".", LogLevel.Trace);
                 }
 
                 return result;
@@ -103,6 +102,7 @@ namespace EscasModdingPlugins
         /// <param name="location">The location of the bush.</param>
         /// <param name="tile">The tile position of the bush. Typically its left-most "collision" tile.</param>
         /// <param name="__result">The result of the original method. True if the bush can be destroyed; false otherwise.</param>
+        [HarmonyPriority(Priority.Low)] //execute this AFTER most other postfixes (to reduce interference with similar patches, e.g. my Destroyable Bushes mod)
         private static void Bush_isDestroyable(Bush __instance, GameLocation location, Vector2 tile, ref bool __result)
         {
             try

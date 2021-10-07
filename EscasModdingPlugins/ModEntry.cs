@@ -30,6 +30,9 @@ namespace EscasModdingPlugins
 
             //destroyable bushes
             HarmonyPatch_DestroyableBushes.ApplyPatch(harmony, Monitor);
+
+            //bed placement
+            HarmonyPatch_BedPlacement.ApplyPatch(harmony, Monitor);
         }
 
         /************************/
