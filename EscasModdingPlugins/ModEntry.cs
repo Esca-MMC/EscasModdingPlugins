@@ -33,6 +33,7 @@ namespace EscasModdingPlugins
 
             //bed placement
             HarmonyPatch_BedPlacement.ApplyPatch(harmony, Monitor);
+            HarmonyPatch_PassOutSafely.ApplyPatch(harmony, Monitor);
         }
 
         /************************/
