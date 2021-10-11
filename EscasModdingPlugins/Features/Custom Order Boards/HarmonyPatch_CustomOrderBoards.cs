@@ -19,7 +19,9 @@ namespace EscasModdingPlugins
 	public static class HarmonyPatch_CustomOrderBoards
 	{
 		/// <summary>The short (not prefixed with mod ID) name of this patch's "Action" tile property value.</summary>
-		public static string ShortActionName { get; set; } = "CustomBoard";
+		public static string ShortActionName { get; set; }
+		/// <summary>The full name of this patch's "Action" tile property value.</summary>
+		public static string ActionName { get; set; }
 
 		/// <summary>True if this patch is currently applied.</summary>
 		public static bool Applied { get; private set; } = false;
@@ -36,6 +38,10 @@ namespace EscasModdingPlugins
 
 			//store args
 			Monitor = monitor;
+
+			//initialize assets/properties
+			ShortActionName = "CustomBoard";
+			ActionName = ModEntry.PropertyPrefix + ShortActionName;
 
 			Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing SDV method \"GameLocation.PerformAction(string, Farmer, Location)\".", LogLevel.Trace);
 			harmony.Patch(
@@ -60,12 +66,12 @@ namespace EscasModdingPlugins
 		{
 			try
 			{
-				if (__result || !who.IsLocalPlayer) //if this action was already performed/handled OR the action was NOT taken by the local player
+				if (action == null || __result || !who.IsLocalPlayer) //if this action is null, already performed successfully, or NOT performed by the local player
 					return; //do nothing
 
 				string[] actionParams = action.Split(' '); //split into parameters by spaces
 
-				if (actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ModEntry.PropertyPrefix + ShortActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
+				if (actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
 				{
 					if (actionParams.Length > 1) //if this action has at least 2 parameters
 					{
@@ -93,7 +99,7 @@ namespace EscasModdingPlugins
 					}
 					else //if a valid order type parameter was NOT provided
 					{
-						Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ModEntry.PropertyPrefix + ShortActionName} OrderType\".", LogLevel.Debug);
+						Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ActionName} OrderType\".", LogLevel.Debug);
 					}
 				}
 
