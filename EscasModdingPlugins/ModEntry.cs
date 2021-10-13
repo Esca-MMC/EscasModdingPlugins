@@ -33,9 +33,11 @@ namespace EscasModdingPlugins
 
             //bed placement
             HarmonyPatch_BedPlacement.ApplyPatch(harmony, Monitor);
-
-            //pass out safely
             HarmonyPatch_PassOutSafely.ApplyPatch(harmony, Monitor);
+
+            //kitchen features
+            HarmonyPatch_ActionKitchen.ApplyPatch(harmony, Monitor);
+            HarmonyPatch_AllowMiniFridges.ApplyPatch(harmony, Monitor);
         }
 
         /************************/
