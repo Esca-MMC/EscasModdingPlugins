@@ -47,6 +47,8 @@ Below is an example of a tile that opens a Special Orders board with type "Esca.
 
 See the Stardew Valley Wiki's section on [tile properties](https://stardewvalleywiki.com/Modding:Maps#Tile_properties_2) for more information about `Action` tile properties. Note that this property must be on the `Buildings` layer, and a tile must exist on that layer to give it properties.
 
+* **This feature was commissioned by Lumina/Lumisteria!**
+
 ## Destroyable Bushes
 This feature allows players to destroy bushes at specific locations or tiles.
 
