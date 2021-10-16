@@ -18,7 +18,9 @@ Mods that use EMP should now work correctly.
 * It is recommended that **all players** install this mod for multiplayer sessions.
 
 ## Features
-This table summarizes each feature added by EMP. **To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
+This table summarizes each feature added by EMP.
+
+**To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
 
 Feature | Summary
 --------|--------
