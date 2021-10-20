@@ -46,5 +46,14 @@ namespace EscasModdingPlugins
 
         public bool CanLoad<T>(IAssetInfo asset) => AssetHelper.CanLoad<T>(asset); //use AssetHelper
         public T Load<T>(IAssetInfo asset) => AssetHelper.Load<T>(asset); //use AssetHelper
+
+        /**************/
+        /* API method */
+        /**************/
+
+        /// <summary>Generates an API instance for another SMAPI mod.</summary>
+        /// <remarks>See <see cref="IEmpApi"/> for documentation.</remarks>
+        /// <returns>A new API instance.</returns>
+        public override object GetApi() => new EmpApi();
     }
 }
