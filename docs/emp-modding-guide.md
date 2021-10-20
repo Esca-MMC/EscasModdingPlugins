@@ -129,7 +129,7 @@ These features allow mods to add functional kitchens to locations other than the
 
 The main feature is a new value for the `Buildings`-layer `Action` tile property: `Esca.EMP/CustomKitchen`
 
-Tiles with this `Action` property value will open the cooking menu, similar to the stove in an upgraded farmhouse. This works at any location and will use ingredients in the player's inventory or any [Mini-Fridges](https://stardewvalleywiki.com/Mini-Fridge) at the same location.
+Tiles with this `Action` property value will open the cooking menu, similar to the stove in an upgraded farmhouse. This works at any location and will use ingredients in the player's inventory, [Mini-Fridges](https://stardewvalleywiki.com/Mini-Fridge) at the same location, and modded chests with `fridge` set to `true`.
 
 Below is an example of how to use this tile property: `Action` `Esca.EMP/Kitchen`
 
