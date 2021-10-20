@@ -106,8 +106,8 @@ namespace EscasModdingPlugins
 				{
 					if ((chest.bigCraftable.Value && chest.ParentSheetIndex == 216) || chest.fridge.Value) //if this chest is a Mini-Fridge OR has "fridge" set to true (the original method only checks for Mini-Fridge)
 					{
-						mini_fridges.Add(item as Chest);
-						muticies.Add((item as Chest).mutex);
+						mini_fridges.Add(chest);
+						muticies.Add(chest.mutex);
 					}
 				}
 			}
