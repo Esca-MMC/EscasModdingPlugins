@@ -76,7 +76,7 @@ namespace EscasModdingPlugins
             }
             else if (location.Map.Properties.TryGetValue(MapPropertyName, out var mapPropertyObject)) //if no tile property exists for this tile, but the location has a non-null map property
             {
-                string mapProperty = mapPropertyObject?.ToString() ?? ""; //get the map property as a string
+                string mapProperty = mapPropertyObject.ToString() ?? ""; //get the map property as a string
 
                 bool result = !mapProperty.Trim().StartsWith("F", StringComparison.OrdinalIgnoreCase); //true if the property's value is NOT "false"
 

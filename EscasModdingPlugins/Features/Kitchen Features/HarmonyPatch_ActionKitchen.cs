@@ -60,9 +60,6 @@ namespace EscasModdingPlugins
 				if (action == null || __result || !who.IsLocalPlayer) //if this action is null, already performed successfully, or NOT performed by the local player
 					return; //do nothing
 
-				if (tileLocation == null) //if a tile location was not provided (required for this action)
-					return; //do nothing
-
 				string[] actionParams = action.Split(' '); //split into parameters by spaces
 
 				if (actionParams[0].Equals(ActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "Esca.EMP/Kitchen"

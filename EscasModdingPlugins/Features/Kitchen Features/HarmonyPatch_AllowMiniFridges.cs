@@ -62,8 +62,9 @@ namespace EscasModdingPlugins
 			{
 				Vector2 placementTile = new Vector2(x / 64, y / 64);
 
-				if (__instance.bigCraftable.Value && __instance.ParentSheetIndex == 216) //if this object is a Mini-Fridge
-                {
+				if (__instance.QualifiedItemID == "(BC)216") //if this object is a Mini-Fridge
+
+				{
 					if (!location.objects.ContainsKey(placementTile) && ShouldAllowMiniFridgesHere(location)) //if this tile is unobstructed (original check) AND this patch should allow placement 
 					{
 						//apply changes normally made at the start of the original method
@@ -74,7 +75,7 @@ namespace EscasModdingPlugins
 							__instance.owner.Value = Game1.player.UniqueMultiplayerID;
 
 						//imitate the original method's code for successful placement
-						Chest fridge = new Chest(216, placementTile, 217, 2)
+						Chest fridge = new Chest("216", placementTile, 217, 2)
 						{
 							shakeTimer = 50
 						};
@@ -101,9 +102,9 @@ namespace EscasModdingPlugins
 		/// <returns>True if Mini-Fridge placement should be allowed here; false otherwise.</returns>
 		private static bool ShouldAllowMiniFridgesHere(GameLocation location)
         {
-			if (location.Map.Properties.TryGetValue(MapPropertyName, out var mapPropertyObject)) //if no tile property exists for this tile, but the location has a non-null map property
+			if (location.Map.Properties.TryGetValue(MapPropertyName, out var mapPropertyObject)) //if the location has a non-null map property
 			{
-				string mapProperty = mapPropertyObject?.ToString() ?? ""; //get the map property as a string
+				string mapProperty = mapPropertyObject.ToString() ?? ""; //get the map property as a string
 
 				bool result = !mapProperty.Trim().StartsWith("F", StringComparison.OrdinalIgnoreCase); //true if the property's value is NOT "false"
 
