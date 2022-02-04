@@ -38,6 +38,9 @@ namespace EscasModdingPlugins
             //kitchen features
             HarmonyPatch_ActionKitchen.ApplyPatch(harmony, Monitor);
             HarmonyPatch_AllowMiniFridges.ApplyPatch(harmony, Monitor);
+
+            //water color
+            WaterColor.Enable(helper, Monitor);
         }
 
         /************************/

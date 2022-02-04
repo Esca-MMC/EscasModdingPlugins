@@ -31,7 +31,7 @@ namespace EscasModdingPlugins
         {
             if (Applied)
                 return;
-            
+
             //store args
             Monitor = monitor;
 
@@ -50,7 +50,7 @@ namespace EscasModdingPlugins
                 {
                     if (AccessTools.Method(type, nameof(GameLocation.getFishingLocation), new[] { typeof(Vector2) }) is MethodInfo fishing) //if this type has a fishing method
                         getFishingLocationMethods.Add(fishing.DeclaringType); //add the method's declaring type to the set
-                    
+
                     if (AccessTools.Method(type, nameof(GameLocation.catchOceanCrabPotFishFromThisSpot), new[] { typeof(int), typeof(int) }) is MethodInfo ocean) //if this type has a crab pot method
                         oceanCrabPotMethods.Add(ocean.DeclaringType); //add the method's declaring type to the set
                 }
