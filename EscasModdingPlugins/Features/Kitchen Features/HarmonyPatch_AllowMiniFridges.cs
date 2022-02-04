@@ -95,6 +95,13 @@ namespace EscasModdingPlugins
         /// <returns>True if Mini-Fridge placement should be allowed here; false otherwise.</returns>
         private static bool ShouldAllowMiniFridgesHere(GameLocation location)
         {
+            if (ModConfig.Instance.AllowMiniFridgesEverywhere) //if config allows placement
+            {
+                if (Monitor?.IsVerbose == true)
+                    Monitor.LogOnce($"Allowing Mini-Fridge placement due to config.json settings.", LogLevel.Trace);
+                return true;
+            }
+
             if (location.Map.Properties.TryGetValue(MapPropertyName, out var mapPropertyObject)) //if no tile property exists for this tile, but the location has a non-null map property
             {
                 string mapProperty = mapPropertyObject?.ToString() ?? ""; //get the map property as a string

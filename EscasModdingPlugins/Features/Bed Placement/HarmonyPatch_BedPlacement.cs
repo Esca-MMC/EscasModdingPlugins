@@ -48,6 +48,13 @@ namespace EscasModdingPlugins
             if (location == null)
                 return false;
 
+            if (ModConfig.Instance.AllowBedPlacementEverywhere) //if config allows placement
+            {
+                if (Monitor?.IsVerbose == true)
+                    Monitor.LogOnce($"Allowing bed placement due to config.json settings.", LogLevel.Trace);
+                return true;
+            }
+
             if (location.Map.Properties.TryGetValue(MapPropertyName, out var mapPropertyObject)) //if the location has a non-null map property
             {
                 string mapProperty = mapPropertyObject?.ToString() ?? ""; //get the map property as a string

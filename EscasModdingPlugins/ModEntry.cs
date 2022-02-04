@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using StardewModdingAPI;
+using System;
 
 namespace EscasModdingPlugins
 {
@@ -16,6 +17,9 @@ namespace EscasModdingPlugins
             //initialize utilities
             AssetHelper.Initialize(helper);
             TileData.Monitor = Monitor;
+
+            //load config.json
+            ModConfig.Initialize(helper, Monitor);
 
             //initialize Harmony and mod features
             Harmony harmony = new Harmony(ModManifest.UniqueID);

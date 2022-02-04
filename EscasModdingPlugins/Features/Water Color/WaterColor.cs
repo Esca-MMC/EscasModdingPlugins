@@ -15,8 +15,6 @@ namespace EscasModdingPlugins
 
         /// <summary>True if this class's behavior is currently enabled.</summary>
         public static bool Enabled { get; private set; } = false;
-        /// <summary>The helper instance to use for API access.</summary>
-        private static IModHelper Helper { get; set; } = null;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
 
@@ -29,7 +27,6 @@ namespace EscasModdingPlugins
                 return; //do nothing
 
             //store args
-            Helper = helper;
             Monitor = monitor;
 
             //initialize assets/properties
