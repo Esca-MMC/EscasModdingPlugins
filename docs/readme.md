@@ -36,7 +36,7 @@ To edit these options:
 EMP also supports [spacechase0](https://github.com/spacechase0)'s [Generic Mod Config Menu](https://spacechase0.com/mods/stardew-valley/generic-mod-config-menu/) (GMCM).
 
 ### For Modders
-The table below summarizes each feature added by EMP.
+The table below summarizes each feature EMP provides for other mods.
 
 **To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
 
