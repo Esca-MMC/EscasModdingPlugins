@@ -4,9 +4,8 @@ A mod for the game Stardew Valley that adds new data assets, map/tile properties
 ## Contents
 * [Installation](#installation)
   * [Multiplayer Note](#multiplayer-note)
-* [Features](#features)
-  * [For Players](#for-players)
-  * [For Modders](#for-modders)
+* [Features for Players](#features-for-players)
+* [Features for Modders](#features-for-modders)
 
 ## Installation
 1. **Install the latest version of [SMAPI](https://smapi.io/).**
@@ -18,8 +17,7 @@ Mods that use EMP should now work correctly.
 ### Multiplayer Note
 * It is recommended that **all players** install this mod for multiplayer sessions.
 
-## Features
-### For Players
+## Features for Players
 EMP lets players enable some of its features as "quality of life" changes for personal use.
 
 Feature | Summary
@@ -35,7 +33,7 @@ To edit these options:
 
 EMP also supports [spacechase0](https://github.com/spacechase0)'s [Generic Mod Config Menu](https://spacechase0.com/mods/stardew-valley/generic-mod-config-menu/) (GMCM).
 
-### For Modders
+## Features for Modders
 The table below summarizes each feature EMP provides for other mods.
 
 **To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
