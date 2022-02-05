@@ -1,9 +1,5 @@
 ﻿using StardewModdingAPI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EscasModdingPlugins
 {
@@ -14,8 +10,8 @@ namespace EscasModdingPlugins
         public static ModConfig Instance { get; set; } = null;
 
         /// <summary>Loads <see cref="Instance"/> from the user's config.json file.</summary>
-        /// <summary>The helper instance to use for API access.</summary>
-        /// <summary>The monitor instance to use for console/log messages.</summary>
+        /// <param name="helper">The helper instance to use for API access.</param>
+        /// <param name="monitor">The monitor instance to use for console/log messages.</param>
         public static void Initialize(IModHelper helper, IMonitor monitor)
         {
             try
