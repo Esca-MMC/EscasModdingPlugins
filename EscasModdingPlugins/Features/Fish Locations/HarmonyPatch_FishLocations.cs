@@ -57,31 +57,33 @@ namespace EscasModdingPlugins
             }
 
             //apply patches
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing every implementation of method \"GameLocation.getFishingLocation(Vector2)\".", LogLevel.Trace);
             foreach (var type in getFishingLocationMethods) //for each unique version of the fishing method
             {
-                Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing SDV method \"{type.Name}.getFishingLocation(Vector2)\".", LogLevel.Trace);
+                Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing method \"{type.Name}.getFishingLocation(Vector2)\".");
                 harmony.Patch(
                     original: AccessTools.Method(type, nameof(GameLocation.getFishingLocation), new[] { typeof(Vector2) }),
                     postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(postfix_getFishingLocation))
                 );
             }
 
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing every implementation of method \"GameLocation.catchOceanCrabPotFishFromThisSpot(int, int)\".", LogLevel.Trace);
             foreach (var type in oceanCrabPotMethods) //for each unique version of the crab pot method
             {
-                Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing SDV method \"{type.Name}.catchOceanCrabPotFishFromThisSpot(int, int)\".", LogLevel.Trace);
+                Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing method \"{type.Name}.catchOceanCrabPotFishFromThisSpot(int, int)\".");
                 harmony.Patch(
                     original: AccessTools.Method(type, nameof(GameLocation.catchOceanCrabPotFishFromThisSpot), new[] { typeof(int), typeof(int) }),
                     postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(postfix_catchOceanCrabPotFishFromThisSpot))
                 );
             }
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": transpiling SDV method \"CrabPot.DayUpdate(GameLocation)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": transpiling method \"CrabPot.DayUpdate(GameLocation)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(CrabPot), nameof(CrabPot.DayUpdate)),
                 transpiler: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(transpiler_CrabPot_DayUpdate))
             );
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing SDV method \"GameLocation.getFish(float, int, int, Farmer, double, Vector2, string)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.getFish(float, int, int, Farmer, double, Vector2, string)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
                 prefix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(prefix_getFish))

@@ -38,7 +38,7 @@ namespace EscasModdingPlugins
             //initialize assets/properties
             ActionName = ModEntry.PropertyPrefix + "Kitchen";
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_ActionKitchen)}\": postfixing SDV method \"GameLocation.performAction(string, Farmer, Location)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_ActionKitchen)}\": postfixing method \"GameLocation.performAction(string, Farmer, Location)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.performAction), new[] { typeof(string), typeof(Farmer), typeof(Location) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_ActionKitchen), nameof(GameLocation_performAction))

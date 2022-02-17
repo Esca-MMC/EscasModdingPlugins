@@ -32,7 +32,7 @@ namespace EscasModdingPlugins
             //initialize assets/properties
             MapPropertyName = ModEntry.PropertyPrefix + "AllowMiniFridges";
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_AllowMiniFridges)}\": prefixing SDV method \"Object.placementAction(GameLocation, int, int, Farmer)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_AllowMiniFridges)}\": prefixing method \"Object.placementAction(GameLocation, int, int, Farmer)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(StardewValley.Object), nameof(StardewValley.Object.placementAction), new[] { typeof(GameLocation), typeof(int), typeof(int), typeof(Farmer) }),
                 prefix: new HarmonyMethod(typeof(HarmonyPatch_AllowMiniFridges), nameof(Object_placementAction))

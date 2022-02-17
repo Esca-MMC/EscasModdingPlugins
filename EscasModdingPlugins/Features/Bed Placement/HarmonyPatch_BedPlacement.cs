@@ -31,7 +31,7 @@ namespace EscasModdingPlugins
             //initialize assets/properties
             MapPropertyName = ModEntry.PropertyPrefix + "BedPlacement"; //assign map property name
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_BedPlacement)}\": postfixing SDV method \"GameLocation.CanPlaceThisFurnitureHere(Furniture)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_BedPlacement)}\": postfixing method \"GameLocation.CanPlaceThisFurnitureHere(Furniture)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.CanPlaceThisFurnitureHere), new[] { typeof(Furniture) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_BedPlacement), nameof(GameLocation_CanPlaceThisFurnitureHere))

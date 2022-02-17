@@ -33,7 +33,7 @@ namespace EscasModdingPlugins
             //initialize assets/properties
             MapPropertyName = ModEntry.PropertyPrefix + "PassOutSafely"; //assign map property name
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_PassOutSafely)}\": transpiling SDV method \"Farmer.performPassoutWarp(Farmer, string, Point, bool)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_PassOutSafely)}\": transpiling method \"Farmer.performPassoutWarp(Farmer, string, Point, bool)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(Farmer), nameof(Farmer.performPassoutWarp)),
                 transpiler: new HarmonyMethod(typeof(HarmonyPatch_PassOutSafely), nameof(Farmer_performPassoutWarp))

@@ -43,13 +43,13 @@ namespace EscasModdingPlugins
             ShortActionName = "CustomBoard";
             ActionName = ModEntry.PropertyPrefix + ShortActionName;
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing SDV method \"GameLocation.PerformAction(string, Farmer, Location)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing method \"GameLocation.PerformAction(string, Farmer, Location)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.performAction), new[] { typeof(string), typeof(Farmer), typeof(Location) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(GameLocation_performAction))
             );
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing SDV method \"SpecialOrder.UpdateAvailableSpecialOrders(bool)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing method \"SpecialOrder.UpdateAvailableSpecialOrders(bool)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(SpecialOrder), nameof(SpecialOrder.UpdateAvailableSpecialOrders), new[] { typeof(bool) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(SpecialOrder_UpdateAvailableSpecialOrders))
