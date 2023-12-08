@@ -14,8 +14,6 @@ namespace EscasModdingPlugins
     {
         /// <summary>True if this class's behavior is currently enabled.</summary>
 		public static bool Enabled { get; private set; } = false;
-        /// <summary>The helper instance to use for API access.</summary>
-        private static IModHelper Helper { get; set; } = null;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
 
@@ -28,7 +26,6 @@ namespace EscasModdingPlugins
                 return; //do nothing
 
             //store args
-            Helper = helper;
             Monitor = monitor;
 
             //initialize events
@@ -110,7 +107,17 @@ namespace EscasModdingPlugins
                             if (location.doesTileHaveProperty(x, y, "Action", "Buildings") is string actionProperty) //if this tile has an Action property
                             {
                                 string[] args = actionProperty.Split(' ');
-                                if (args.Length > 2 && args[0].Equals("CustomBoard", StringComparison.OrdinalIgnoreCase) && args[2].Equals("true"))
+
+                                if //if this is a CustomBoard action with exclamations set to "true"
+                                (
+                                    args.Length > 2 &&
+                                    args[2].Equals("true", StringComparison.OrdinalIgnoreCase) &&
+                                    (
+                                        //"CustomBoard" or "Esca.EMP/CustomBoard"
+                                        args[0].Equals(HarmonyPatch_CustomOrderBoards.ShortActionName, StringComparison.OrdinalIgnoreCase) ||
+                                        args[0].Equals(HarmonyPatch_CustomOrderBoards.ActionName, StringComparison.OrdinalIgnoreCase)
+                                    )
+                                )
                                 {
                                     string orderType = args[1]; //use the second param as the order type
 

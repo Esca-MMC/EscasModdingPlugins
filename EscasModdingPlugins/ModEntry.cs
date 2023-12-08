@@ -3,7 +3,7 @@ using StardewModdingAPI;
 
 namespace EscasModdingPlugins
 {
-    public class ModEntry : Mod, IAssetLoader
+    public class ModEntry : Mod
     {
         /// <summary>The beginning of each each map/tile property name implemented by this mod.</summary>
         public static readonly string PropertyPrefix = "Esca.EMP/";
@@ -16,6 +16,12 @@ namespace EscasModdingPlugins
             //initialize utilities
             AssetHelper.Initialize(helper);
             TileData.Monitor = Monitor;
+
+            //load config.json
+            ModConfig.Initialize(helper, Monitor);
+
+            //initialize mod interactions
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeModInteractions;
 
             //initialize Harmony and mod features
             Harmony harmony = new Harmony(ModManifest.UniqueID);
@@ -43,12 +49,11 @@ namespace EscasModdingPlugins
             WaterColor.Enable(helper, Monitor);
         }
 
-        /************************/
-        /* IAssetLoader methods */
-        /************************/
-
-        public bool CanLoad<T>(IAssetInfo asset) => AssetHelper.CanLoad<T>(asset); //use AssetHelper
-        public T Load<T>(IAssetInfo asset) => AssetHelper.Load<T>(asset); //use AssetHelper
+        /// <summary>Initializes mod interactions when all mods have finished loading.</summary>
+        private void GameLoop_GameLaunched_InitializeModInteractions(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            ModInteractions.GMCM.Initialize(Helper, Monitor, ModManifest);
+        }
 
         /**************/
         /* API method */

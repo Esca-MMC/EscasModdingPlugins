@@ -31,7 +31,7 @@ namespace EscasModdingPlugins
         {
             if (Applied)
                 return;
-            
+
             //store args
             Monitor = monitor;
 
@@ -50,41 +50,43 @@ namespace EscasModdingPlugins
                 {
                     if (AccessTools.Method(type, nameof(GameLocation.getFishingLocation), new[] { typeof(Vector2) }) is MethodInfo fishing) //if this type has a fishing method
                         getFishingLocationMethods.Add(fishing.DeclaringType); //add the method's declaring type to the set
-                    
+
                     if (AccessTools.Method(type, nameof(GameLocation.catchOceanCrabPotFishFromThisSpot), new[] { typeof(int), typeof(int) }) is MethodInfo ocean) //if this type has a crab pot method
                         oceanCrabPotMethods.Add(ocean.DeclaringType); //add the method's declaring type to the set
                 }
             }
 
             //apply patches
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing every implementation of method \"GameLocation.getFishingLocation(Vector2)\".", LogLevel.Trace);
             foreach (var type in getFishingLocationMethods) //for each unique version of the fishing method
             {
-                Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing SDV method \"{type.Name}.getFishingLocation(Vector2)\".", LogLevel.Trace);
+                Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing method \"{type.Name}.getFishingLocation(Vector2)\".");
                 harmony.Patch(
                     original: AccessTools.Method(type, nameof(GameLocation.getFishingLocation), new[] { typeof(Vector2) }),
-                    postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(postfix_getFishingLocation))
+                    postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Postfix_getFishingLocation))
                 );
             }
 
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing every implementation of method \"GameLocation.catchOceanCrabPotFishFromThisSpot(int, int)\".", LogLevel.Trace);
             foreach (var type in oceanCrabPotMethods) //for each unique version of the crab pot method
             {
-                Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing SDV method \"{type.Name}.catchOceanCrabPotFishFromThisSpot(int, int)\".", LogLevel.Trace);
+                Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing method \"{type.Name}.catchOceanCrabPotFishFromThisSpot(int, int)\".");
                 harmony.Patch(
                     original: AccessTools.Method(type, nameof(GameLocation.catchOceanCrabPotFishFromThisSpot), new[] { typeof(int), typeof(int) }),
-                    postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(postfix_catchOceanCrabPotFishFromThisSpot))
+                    postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Postfix_catchOceanCrabPotFishFromThisSpot))
                 );
             }
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": transpiling SDV method \"CrabPot.DayUpdate(GameLocation)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": transpiling method \"CrabPot.DayUpdate(GameLocation)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(CrabPot), nameof(CrabPot.DayUpdate)),
-                transpiler: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(transpiler_CrabPot_DayUpdate))
+                transpiler: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Transpiler_CrabPot_DayUpdate))
             );
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing SDV method \"GameLocation.getFish(float, int, int, Farmer, double, Vector2, string)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.getFish(float, int, int, Farmer, double, Vector2, string)\".", LogLevel.Trace);
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
-                prefix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(prefix_getFish))
+                prefix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Prefix_getFish))
             );
 
             Applied = true;
@@ -94,7 +96,7 @@ namespace EscasModdingPlugins
         /// <param name="__instance">The instance calling the original method.</param>
         /// <param name="tile">The tile to check. As of SDV 1.5.4, this is the tile location of the fishing farmer.</param>
         /// <param name="__result">The final result of the original method. Indicates which fish group(s) should be used from the Data/Locations asset.</param>
-        private static void postfix_getFishingLocation(GameLocation __instance, Vector2 tile, ref int __result)
+        private static void Postfix_getFishingLocation(GameLocation __instance, Vector2 tile, ref int __result)
         {
             try
             {
@@ -111,7 +113,7 @@ namespace EscasModdingPlugins
             }
             catch (Exception ex)
             {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(postfix_getFishingLocation)}\" has encountered an error. Default fishing areas will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
+                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(Postfix_getFishingLocation)}\" has encountered an error. Default fishing areas will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
                 return; //run the original method
             }
         }
@@ -121,7 +123,7 @@ namespace EscasModdingPlugins
         /// <param name="x">The horizontal position of the tile to check.</param>
         /// <param name="y">The vertical position of the tile to check.</param>
         /// <param name="__result">The result of the original method. Indicates whether crab pots on this tile should use "ocean" (true) or "freshwater" (false) data.</param>
-        private static void postfix_catchOceanCrabPotFishFromThisSpot(GameLocation __instance, int x, int y, ref bool __result)
+        private static void Postfix_catchOceanCrabPotFishFromThisSpot(GameLocation __instance, int x, int y, ref bool __result)
         {
             try
             {
@@ -139,7 +141,7 @@ namespace EscasModdingPlugins
             }
             catch (Exception ex)
             {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(postfix_catchOceanCrabPotFishFromThisSpot)}\" has encountered an error. Default crab pot results will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
+                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(Postfix_catchOceanCrabPotFishFromThisSpot)}\" has encountered an error. Default crab pot results will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
                 return; //run the original method
             }
         }
@@ -155,7 +157,7 @@ namespace EscasModdingPlugins
         /// <param name="__instance">The instance calling the original method.</param>
         /// <param name="bobberTile">The tile where the player is fishing.</param>
         /// <param name="locationName">An alternate location name to use when loading fish data.</param>
-        private static void prefix_getFish(GameLocation __instance, Vector2 bobberTile, ref string locationName)
+        private static void Prefix_getFish(GameLocation __instance, Vector2 bobberTile, ref string locationName)
         {
             try
             {
@@ -169,7 +171,7 @@ namespace EscasModdingPlugins
             }
             catch (Exception ex)
             {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(prefix_getFish)}\" has encountered an error. Default fish data will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
+                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(Prefix_getFish)}\" has encountered an error. Default fish data will be used for this location: \"{__instance?.Name}\". Full error message: \n{ex.ToString()}", LogLevel.Error);
                 MostRecentBobberTile = null; //avoid using incorrect bobber tiles
                 return; //run the original method
             }
@@ -195,7 +197,7 @@ namespace EscasModdingPlugins
         /// The removed check is reimplemented in this class's postfix for "catchOceanCrabPotFishFromThisSpot", but given lower priority than custom data.
         /// </remarks>
         /// <param name="instructions">The original method's CIL code.</param>
-        private static IEnumerable<CodeInstruction> transpiler_CrabPot_DayUpdate(IEnumerable<CodeInstruction> instructions)
+        private static IEnumerable<CodeInstruction> Transpiler_CrabPot_DayUpdate(IEnumerable<CodeInstruction> instructions)
         {
             try
             {
@@ -215,7 +217,7 @@ namespace EscasModdingPlugins
             }
             catch (Exception ex)
             {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(transpiler_CrabPot_DayUpdate)}\" has encountered an error. Default results will be used for beach crab pots. Full error message:\n{ex.ToString()}", LogLevel.Error);
+                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_FishLocations)}.{nameof(Transpiler_CrabPot_DayUpdate)}\" has encountered an error. Default results will be used for beach crab pots. Full error message:\n{ex.ToString()}", LogLevel.Error);
                 return instructions; //return the original instructions
             }
         }
