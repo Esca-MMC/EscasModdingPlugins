@@ -35,9 +35,9 @@ namespace EscasModdingPlugins
             MapPropertyName = ModEntry.PropertyPrefix + "DestroyableBushes"; //assign map property name
             TilePropertyName = ModEntry.PropertyPrefix + "DestroyableBushes"; //assign tile property name
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_DestroyableBushes)}\": postfixing method \"Bush.isDestroyable(GameLocation, Vector2)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_DestroyableBushes)}\": postfixing method \"Bush.isDestroyable()\".", LogLevel.Trace);
             harmony.Patch(
-                original: AccessTools.Method(typeof(Bush), nameof(Bush.isDestroyable), new[] { typeof(GameLocation), typeof(Vector2) }),
+                original: AccessTools.Method(typeof(Bush), nameof(Bush.isDestroyable)),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_DestroyableBushes), nameof(Bush_isDestroyable))
             );
 
@@ -103,7 +103,7 @@ namespace EscasModdingPlugins
         /// <param name="tile">The tile position of the bush. Typically its left-most "collision" tile.</param>
         /// <param name="__result">The result of the original method. True if the bush can be destroyed; false otherwise.</param>
         [HarmonyPriority(Priority.Low)] //execute this AFTER most other postfixes (to reduce interference with similar patches, e.g. my Destroyable Bushes mod)
-        private static void Bush_isDestroyable(Bush __instance, GameLocation location, Vector2 tile, ref bool __result)
+        private static void Bush_isDestroyable(Bush __instance, ref bool __result)
         {
             try
             {
@@ -112,7 +112,7 @@ namespace EscasModdingPlugins
 
                 if (__instance.size.Value == Bush.smallBush || __instance.size.Value == Bush.mediumBush || __instance.size.Value == Bush.largeBush) //if this is a "normal" type of bush (ignore tea/walnut bushes and unknown types)
                 {
-                    if (ShouldBushesBeDestroyableHere(location, tile)) //if this mod should allow bush destruction at this location/tile
+                    if (ShouldBushesBeDestroyableHere(__instance.Location, __instance.Tile)) //if this mod should allow bush destruction at this location/tile
                         __result = true; //treat this bush as destroyable
                 }
             }

@@ -28,7 +28,7 @@ namespace EscasModdingPlugins
         /// <param name="harmony">The <see cref="Harmony"/> created with this mod's ID.</param>
         /// <param name="monitor">The <see cref="IMonitor"/> provided by SMAPI. Used for log messages.</param>
         public static void ApplyPatch(Harmony harmony, IMonitor monitor)
-        {
+        {/*
             if (Applied)
                 return;
 
@@ -90,7 +90,7 @@ namespace EscasModdingPlugins
             );
 
             Applied = true;
-        }
+        */}
 
         /// <summary>Modifies the result of the original method, based on a customizable data asset and/or tile property.</summary>
         /// <param name="__instance">The instance calling the original method.</param>

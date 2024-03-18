@@ -45,9 +45,9 @@ namespace EscasModdingPlugins
             ShortActionName = "CustomBoard";
             ActionName = ModEntry.PropertyPrefix + ShortActionName;
 
-            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing method \"GameLocation.PerformAction(string, Farmer, Location)\".", LogLevel.Trace);
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing method \"GameLocation.PerformAction(string[], Farmer, Location)\".", LogLevel.Trace);
             harmony.Patch(
-                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.performAction), new[] { typeof(string), typeof(Farmer), typeof(Location) }),
+                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.performAction), new[] { typeof(string[]), typeof(Farmer), typeof(Location) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(GameLocation_performAction))
             );
 
@@ -61,23 +61,21 @@ namespace EscasModdingPlugins
         }
 
         /// <summary>Adds the "CustomBoard" action type for the Buildings layer "Action" property.</summary>
-        /// <param name="action">The value of the "Action" tile property being parsed.</param>
+        /// <param name="fullActionString">The value of the "Action" tile property being parsed.</param>
         /// <param name="who">The farmer performing the action.</param>
         /// <param name="__result">True if an action was performed; false otherwise.</param>
-        private static void GameLocation_performAction(string action, Farmer who, ref bool __result)
+        private static void GameLocation_performAction(string[] action, Farmer who, ref bool __result)
         {
             try
             {
                 if (action == null || __result || !who.IsLocalPlayer) //if this action is null, already performed successfully, or NOT performed by the local player
                     return; //do nothing
 
-                string[] actionParams = action.Split(' '); //split into parameters by spaces
-
-                if (actionParams[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || actionParams[0].Equals(ActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
+                if (action[0].Equals(ShortActionName, StringComparison.OrdinalIgnoreCase) || action[0].Equals(ActionName, StringComparison.OrdinalIgnoreCase)) //if this action's first parameter is "CustomBoard" or "Esca.EMP/CustomBoard"...
                 {
-                    if (actionParams.Length > 1) //if this action has at least 2 parameters
+                    if (action.Length > 1) //if this action has at least 2 parameters
                     {
-                        string orderType = actionParams[1]; //use the second param as the order type
+                        string orderType = action[1]; //use the second param as the order type
 
                         if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
                             orderType = ModEntry.PropertyPrefix + orderType; //add that prefix before using it
@@ -101,7 +99,7 @@ namespace EscasModdingPlugins
                     }
                     else //if a valid order type parameter was NOT provided
                     {
-                        Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{action}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ActionName} OrderType\".", LogLevel.Debug);
+                        Monitor.LogOnce($"Invalid \"Action\" value for custom order board: \"{String.Join(' ', action)}\". No order type was provided. Valid formats: \"{ShortActionName} OrderType\" or \"{ActionName} OrderType\".", LogLevel.Debug);
                     }
                 }
 
