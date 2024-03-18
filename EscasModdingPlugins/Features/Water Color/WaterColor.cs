@@ -15,8 +15,10 @@ namespace EscasModdingPlugins
 
         /// <summary>True if this class's behavior is currently enabled.</summary>
         public static bool Enabled { get; private set; } = false;
+
         /// <summary>The helper instance to use for API access.</summary>
         private static IModHelper Helper { get; set; } = null;
+
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
 
@@ -39,6 +41,8 @@ namespace EscasModdingPlugins
             helper.Events.GameLoop.DayStarted += DayStarted_UpdateWaterColor;
             helper.Events.GameLoop.TimeChanged += TimeChanged_UpdateWaterColor;
             helper.Events.Player.Warped += Warped_UpdateWaterColor;
+
+            Enabled = true;
         }
 
         private static void DayStarted_UpdateWaterColor(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)

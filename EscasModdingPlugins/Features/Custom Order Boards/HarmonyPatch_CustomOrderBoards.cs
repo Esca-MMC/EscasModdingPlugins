@@ -1,8 +1,9 @@
 ﻿using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.GameData;
+using StardewValley.GameData.SpecialOrders;
 using StardewValley.Menus;
+using StardewValley.SpecialOrders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,11 +150,11 @@ namespace EscasModdingPlugins
             {
                 string key = keys[k];
                 bool invalid = false;
-                if (!invalid && order_data[key].Repeatable != "True" && Game1.MasterPlayer.team.completedSpecialOrders.ContainsKey(key))
+                if (!invalid && order_data[key].Repeatable != true && Game1.MasterPlayer.team.completedSpecialOrders.Contains(key))
                 {
                     invalid = true;
                 }
-                if (Game1.dayOfMonth >= 16 && order_data[key].Duration == "Month")
+                if (Game1.dayOfMonth >= 16 && order_data[key].Duration == QuestDuration.Month)
                 {
                     invalid = true;
                 }
@@ -165,7 +166,7 @@ namespace EscasModdingPlugins
                 {
                     foreach (SpecialOrder specialOrder in Game1.player.team.specialOrders)
                     {
-                        if ((string)specialOrder.questKey == key)
+                        if (specialOrder.questKey.Value == key)
                         {
                             invalid = true;
                             break;
@@ -213,7 +214,7 @@ namespace EscasModdingPlugins
             //{
             for (int j = 0; j < typed_keys.Count; j++)
             {
-                if (Game1.player.team.completedSpecialOrders.ContainsKey(typed_keys[j]))
+                if (Game1.player.team.completedSpecialOrders.Contains(typed_keys[j]))
                 {
                     typed_keys.RemoveAt(j);
                     j--;

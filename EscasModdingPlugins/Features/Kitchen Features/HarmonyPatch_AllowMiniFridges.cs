@@ -56,7 +56,7 @@ namespace EscasModdingPlugins
             {
                 Vector2 placementTile = new Vector2(x / 64, y / 64);
 
-				if (__instance.QualifiedItemID == "(BC)216") //if this object is a Mini-Fridge
+				if (__instance.QualifiedItemId == "(BC)216") //if this object is a Mini-Fridge
 
 				{
 					if (!location.objects.ContainsKey(placementTile) && ShouldAllowMiniFridgesHere(location)) //if this tile is unobstructed (original check) AND this patch should allow placement 
