@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.GameData.SpecialOrders;
@@ -15,7 +16,7 @@ namespace EscasModdingPlugins
     /// <remarks>
     /// This class's goals:
     /// 1. Add a value to the Action tile property on the Buildings layer, allowing tiles to load the <see cref="SpecialOrdersBoard"/> menu with a custom "type" argument
-    /// 2. Add additional loading logic for non-default order types, allowing access to non-default order types (only "" and "Qi" load/update by default)
+    /// 2. Add additional loading logic for non-default order types, allowing custom boards to offer them (Stardew's default order boards only load or update the "" and "Qi" types)
     /// </remarks>
     public static class HarmonyPatch_CustomOrderBoards
     {
@@ -118,8 +119,10 @@ namespace EscasModdingPlugins
         {
             try
             {
-                var orderData = AssetHelper.GetAsset<Dictionary<string, SpecialOrderData>>("Data/SpecialOrders"); //load the special orders data
-                List<string> orderKeys = GetAvailableOrderKeys(orderData); //get a list of keys to use for new orders
+                //imitate the original update method's logic: load special orders and get a list of order keys that could currently start
+                var orderData = DataLoader.SpecialOrders(Game1.content);
+                List<string> orderKeys = new List<string>(orderData.Keys);
+                orderKeys.RemoveAll((string id) => !SpecialOrder.CanStartOrderNow(id, orderData[id]));
 
                 //get each distinct OrderType that starts with "Esca.EMP/"
                 HashSet<string> orderTypesEMP = new HashSet<string>(orderData.Select(entry => entry.Value.OrderType)
@@ -139,50 +142,6 @@ namespace EscasModdingPlugins
             }
         }
 
-        /// <summary>Gets a list of valid order keys for use when loading available special orders.</summary>
-        /// <remarks>Imitates logic from <see cref="SpecialOrder.UpdateAvailableSpecialOrders(bool)"/> to validate special order keys.</remarks>
-        /// <param name="order_data">Loaded data from the asset "Data/SpecialOrders".</param>
-        /// <returns>A list of each key from "Data/SpecialOrders" that should be available on special order boards.</returns>
-        private static List<string> GetAvailableOrderKeys(Dictionary<string, SpecialOrderData> order_data)
-        {
-            List<string> keys = new List<string>(order_data.Keys);
-            for (int k = 0; k < keys.Count; k++)
-            {
-                string key = keys[k];
-                bool invalid = false;
-                if (!invalid && order_data[key].Repeatable != true && Game1.MasterPlayer.team.completedSpecialOrders.Contains(key))
-                {
-                    invalid = true;
-                }
-                if (Game1.dayOfMonth >= 16 && order_data[key].Duration == QuestDuration.Month)
-                {
-                    invalid = true;
-                }
-                if (!invalid && !SpecialOrder.CheckTags(order_data[key].RequiredTags)) //prefix CheckTags with SpecialOrders (normally called internally)
-                {
-                    invalid = true;
-                }
-                if (!invalid)
-                {
-                    foreach (SpecialOrder specialOrder in Game1.player.team.specialOrders)
-                    {
-                        if (specialOrder.questKey.Value == key)
-                        {
-                            invalid = true;
-                            break;
-                        }
-                    }
-                }
-                if (invalid)
-                {
-                    keys.RemoveAt(k);
-                    k--;
-                }
-            }
-
-            return keys; //return the completed key list
-        }
-
         /// <summary>Loads 2 orders of the provided order type if possible.</summary>
         /// <remarks>Imitates logic from <see cref="SpecialOrder.UpdateAvailableSpecialOrders(bool)"/> to load the provided order type. Note that the original only loads "" and "Qi" types.</remarks>
         /// <param name="customOrderType">The <see cref="SpecialOrder.orderType"/> to load.</param>
@@ -196,7 +155,7 @@ namespace EscasModdingPlugins
             //imitate the original update method's loading logic, but load 2 orders of the custom type
             //note that comments below indicate edited code (actual comments) or removed code (commented out)
 
-            Random r = new Random((int)Game1.uniqueIDForThisGame + (int)((float)Game1.stats.DaysPlayed * 1.3f));
+            Random r = Utility.CreateRandom(Game1.uniqueIDForThisGame, (double)Game1.stats.DaysPlayed * 1.3);
             //Game1.player.team.availableSpecialOrders.Clear();
             //string[] array = new string[2]{ "", "Qi" };
             //foreach (string type_to_find in array)
@@ -233,7 +192,11 @@ namespace EscasModdingPlugins
                 }
                 int index = r.Next(typed_keys.Count);
                 string key2 = typed_keys[index];
-                Game1.player.team.availableSpecialOrders.Add(SpecialOrder.GetSpecialOrder(key2, r.Next())); //prefix GetSpecialOrder with the SpecialOrder class (normally called internally)
+                SpecialOrder order = SpecialOrder.GetSpecialOrder(key2, r.Next());
+                if (order != null)
+                {
+                    Game1.player.team.availableSpecialOrders.Add(order);
+                }
                 typed_keys.Remove(key2);
                 all_keys.Remove(key2);
             }
