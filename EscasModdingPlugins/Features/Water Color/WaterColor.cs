@@ -165,7 +165,7 @@ namespace EscasModdingPlugins
                 if (colorToUse != null) //if map property exists and was parsed successfully
                 {
                     if (Monitor.IsVerbose)
-                        Monitor.Log($"Overriding water color based on map property {MapPropertyName}. Location: {location.Name}. Property value: {mapProperty}.", LogLevel.Alert);
+                        Monitor.Log($"Overriding water color based on map property {MapPropertyName}. Location: {location.Name}. Property value: {mapProperty}.", LogLevel.Trace);
                     return colorToUse.Value;
                 }
             }
