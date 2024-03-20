@@ -53,7 +53,7 @@ namespace EscasModdingPlugins
 
             Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\": postfixing method \"SpecialOrder.UpdateAvailableSpecialOrders(bool)\".", LogLevel.Trace);
             harmony.Patch(
-                original: AccessTools.Method(typeof(SpecialOrder), nameof(SpecialOrder.UpdateAvailableSpecialOrders), new[] { typeof(bool) }),
+                original: AccessTools.Method(typeof(SpecialOrder), nameof(SpecialOrder.UpdateAvailableSpecialOrders), new[] { typeof(string), typeof(bool) }),
                 postfix: new HarmonyMethod(typeof(HarmonyPatch_CustomOrderBoards), nameof(SpecialOrder_UpdateAvailableSpecialOrders))
             );
 
@@ -112,15 +112,15 @@ namespace EscasModdingPlugins
             }
         }
 
-        /// <summary>Loads 2 additional available orders of each EMP-specific order type.</summary>
-        private static void SpecialOrder_UpdateAvailableSpecialOrders()
+        /// <summary>Reloads the available orders for each EMP-specific order type.</summary>
+        private static void SpecialOrder_UpdateAvailableSpecialOrders(string orderType, bool forceRefresh)
         {
             try
             {
-                //imitate the original update method's logic: load special orders and get a list of order keys that could currently start
-                var orderData = DataLoader.SpecialOrders(Game1.content);
-                List<string> orderKeys = new List<string>(orderData.Keys);
-                orderKeys.RemoveAll((string id) => !SpecialOrder.CanStartOrderNow(id, orderData[id]));
+                if (orderType != "" || forceRefresh == false) //if this method is NOT refreshing the "default" special orders (which should happen once at the start of each day)
+                    return; //do nothing
+
+                var orderData = DataLoader.SpecialOrders(Game1.content); //load all special order data
 
                 //get each distinct OrderType that starts with "Esca.EMP/"
                 HashSet<string> orderTypesEMP = new HashSet<string>(orderData.Select(entry => entry.Value.OrderType)
@@ -130,75 +130,14 @@ namespace EscasModdingPlugins
                 {
                     if (Monitor.IsVerbose)
                         Monitor.Log($"Updating available special orders for custom order type: \"{orderTypeEMP}\"", LogLevel.Trace);
-                    LoadCustomOrderType(orderTypeEMP, orderData, orderKeys); //load 2 available orders of this type
+                    SpecialOrder.UpdateAvailableSpecialOrders(orderTypeEMP, true); //force refresh on this order type (NOTE: beware of recursion here, since this is a patch on the same method)
                 }
             }
             catch (Exception ex)
             {
-                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\" has encountered an error. Special orders with custom OrderType values might not load correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
+                Monitor.LogOnce($"Harmony patch \"{nameof(HarmonyPatch_CustomOrderBoards)}\" has encountered an error. Custom special orders might not update correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
                 return; //run the original method
             }
-        }
-
-        /// <summary>Loads 2 orders of the provided order type if possible.</summary>
-        /// <remarks>Imitates logic from <see cref="SpecialOrder.UpdateAvailableSpecialOrders(bool)"/> to load the provided order type. Note that the original only loads "" and "Qi" types.</remarks>
-        /// <param name="customOrderType">The <see cref="SpecialOrder.orderType"/> to load.</param>
-        /// <param name="order_data">Loaded data from the asset "Data/SpecialOrders".</param>
-        /// <param name="keys">Valid keys for available orders. See <see cref="GetAvailableOrderKeys"/>.</param>
-        private static void LoadCustomOrderType(string customOrderType, Dictionary<string, SpecialOrderData> order_data, List<string> keys)
-        {
-            if (Game1.player.team.availableSpecialOrders.Any(order => order.orderType.Value == customOrderType)) //if any available orders already have this type
-                return; //do nothing
-
-            //imitate the original update method's loading logic, but load 2 orders of the custom type
-            //note that comments below indicate edited code (actual comments) or removed code (commented out)
-
-            Random r = Utility.CreateRandom(Game1.uniqueIDForThisGame, (double)Game1.stats.DaysPlayed * 1.3);
-            //Game1.player.team.availableSpecialOrders.Clear();
-            //string[] array = new string[2]{ "", "Qi" };
-            //foreach (string type_to_find in array)
-            //{
-            List<string> typed_keys = new List<string>();
-            foreach (string key3 in keys)
-            {
-                if (order_data[key3].OrderType == customOrderType) //replace type_to_find with customOrderType
-                {
-                    typed_keys.Add(key3);
-                }
-            }
-            List<string> all_keys = new List<string>(typed_keys);
-            //if (type_to_find != "Qi")
-            //{
-            for (int j = 0; j < typed_keys.Count; j++)
-            {
-                if (Game1.player.team.completedSpecialOrders.Contains(typed_keys[j]))
-                {
-                    typed_keys.RemoveAt(j);
-                    j--;
-                }
-            }
-            //}
-            for (int i = 0; i < 2; i++)
-            {
-                if (typed_keys.Count == 0)
-                {
-                    if (all_keys.Count == 0)
-                    {
-                        break;
-                    }
-                    typed_keys = new List<string>(all_keys);
-                }
-                int index = r.Next(typed_keys.Count);
-                string key2 = typed_keys[index];
-                SpecialOrder order = SpecialOrder.GetSpecialOrder(key2, r.Next());
-                if (order != null)
-                {
-                    Game1.player.team.availableSpecialOrders.Add(order);
-                }
-                typed_keys.Remove(key2);
-                all_keys.Remove(key2);
-            }
-            //}
         }
     }
 }
