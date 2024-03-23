@@ -27,7 +27,7 @@ namespace EscasModdingPlugins
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
             //fish locations
-            //HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
+            HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
 
             //custom order boards
             HarmonyPatch_CustomOrderBoards.ApplyPatch(harmony, Monitor);
