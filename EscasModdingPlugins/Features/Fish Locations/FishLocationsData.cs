@@ -24,10 +24,10 @@ namespace EscasModdingPlugins
         /// <summary>The replacement locationName value in <see cref="GameLocation.getFish"/> (if not null). Decides which location key will be used in the Data/Locations asset.</summary>
         public string UseLocation { get; set; } = null;
         /// <summary>The replacement tile value in <see cref="GameLocation.getFish"/> (if not null). Decides which tile will be used for fishing zones in the Data/Locations asset.</summary>
-        public Vector2? UseTile { get; set; } = null;
+        public JsonVector2? UseTile { get; set; } = null;
 
         private List<string> useCrabPotTypes { get; set; } = null;
-        /// <summary>The replacement list of fish types to return in <see cref="GameLocation.GetCrabPotFishForTile(Microsoft.Xna.Framework.Vector2)"/> (if not null). Decides which sets of crab pot "fish" can be caught.</summary>
+        /// <summary>The replacement list of fish types to return in <see cref="GameLocation.GetCrabPotFishForTile(Vector2)"/> (if not null). Decides which sets of crab pot "fish" can be caught.</summary>
         /// <remarks>As of SDV 1.6, these values are case-sensitive.</remarks>
         public List<string> UseCrabPotTypes
         {
@@ -142,7 +142,7 @@ namespace EscasModdingPlugins
         private bool TryParseFormat2(string[] splitValue)
         {
             string useLocation = null;
-            Vector2? useTile = null;
+            JsonVector2? useTile = null;
             List<string> useCrabPotTypes = null;
 
             if (!string.IsNullOrWhiteSpace(splitValue[0]) && !splitValue[0].Equals("null", StringComparison.OrdinalIgnoreCase)) //if the first entry is NOT blank/empty or the word "null"
@@ -156,7 +156,7 @@ namespace EscasModdingPlugins
                     {
                         if (int.TryParse(splitValue[2], out int y)) //if the third entry is also an integer
                         {
-                            useTile = new Vector2(x, y); //use entries 2 and 3 as tile coordinates
+                            useTile = new JsonVector2(x, y); //use entries 2 and 3 as tile coordinates
 
                             if (splitValue.Length > 3) //if 4 entries exist
                             {

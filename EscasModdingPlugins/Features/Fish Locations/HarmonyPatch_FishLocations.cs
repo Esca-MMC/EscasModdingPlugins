@@ -84,14 +84,14 @@ namespace EscasModdingPlugins
                 if (data?.UseLocation != null) //if a location override exists for this tile
                 {
                     if (Monitor.IsVerbose)
-                        Monitor.VerboseLog($"Using fish from another location ({data.UseLocation}) at {__instance?.Name} ({bobberTile.X},{bobberTile.Y}).");
+                        Monitor.VerboseLog($"Using fish from another location ({data.UseLocation}) at {__instance?.Name} ({(int)bobberTile.X},{(int)bobberTile.Y}).");
                     locationName = data.UseLocation; //override the target location
                 }
                 if (data?.UseTile != null) //if a tile override exists for this tile
                 {
                     if (Monitor.IsVerbose)
-                        Monitor.VerboseLog($"Using fish from another tile ({data.UseTile.Value.X},{data.UseTile.Value.Y}) at {__instance?.Name} ({bobberTile.X},{bobberTile.Y}).");
-                    bobberTile = data.UseTile.Value;
+                        Monitor.VerboseLog($"Using fish from another tile ({data.UseTile.Value.X},{data.UseTile.Value.Y}) at {__instance?.Name} ({(int)bobberTile.X},{(int)bobberTile.Y}).");
+                    bobberTile = data.UseTile.Value.AsVector2();
                 }
             }
             catch (Exception ex)

@@ -33,7 +33,7 @@ namespace EscasModdingPlugins
             var data = TileData.GetDataForTile<FishLocationsData>(HarmonyPatch_FishLocations.AssetName, HarmonyPatch_FishLocations.TilePropertyName, location, (int)tile.X, (int)tile.Y);
 
             useLocationName = data?.UseLocation ?? null;
-            useTile = data?.UseTile ?? null;
+            useTile = data?.UseTile?.AsVector2() ?? null;
             useCrabPotTypes = data?.UseCrabPotTypes ?? null;
         }
     }
