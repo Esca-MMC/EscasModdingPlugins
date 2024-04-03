@@ -81,11 +81,17 @@ namespace EscasModdingPlugins
             try
             {
                 var data = TileData.GetDataForTile<FishLocationsData>(AssetName, TilePropertyName, __instance, (int)bobberTile.X, (int)bobberTile.Y); //get fishing location data for this tile
-                if (data?.UseLocation != null) //if a custom fish location exists for this tile
+                if (data?.UseLocation != null) //if a location override exists for this tile
                 {
                     if (Monitor.IsVerbose)
                         Monitor.VerboseLog($"Using fish from another location ({data.UseLocation}) at {__instance?.Name} ({bobberTile.X},{bobberTile.Y}).");
                     locationName = data.UseLocation; //override the target location
+                }
+                if (data?.UseTile != null) //if a tile override exists for this tile
+                {
+                    if (Monitor.IsVerbose)
+                        Monitor.VerboseLog($"Using fish from another tile ({data.UseTile.Value.X},{data.UseTile.Value.Y}) at {__instance?.Name} ({bobberTile.X},{bobberTile.Y}).");
+                    bobberTile = data.UseTile.Value;
                 }
             }
             catch (Exception ex)
@@ -104,15 +110,13 @@ namespace EscasModdingPlugins
             try
             {
                 var data = TileData.GetDataForTile<FishLocationsData>(AssetName, TilePropertyName, __instance, (int)tile.X, (int)tile.Y); //get fishing location data for this tile
-                if (data?.UseOceanCrabPots != null) //if custom crab pot data exists for this tile
+
+                if (data.UseCrabPotTypes != null) //if a list of crab types exists for this tile
                 {
                     if (Monitor.IsVerbose)
-                        Monitor.VerboseLog($"Using custom crab pot results ({(data.UseOceanCrabPots.Value ? "ocean" : "freshwater")}) at {__instance?.Name} ({tile.X},{tile.Y}).");
+                        Monitor.VerboseLog($"Using custom crab pot results ({string.Join(", ", data.UseCrabPotTypes)}) at {__instance?.Name} ({tile.X},{tile.Y}).");
 
-                    if (data.UseOceanCrabPots.Value)
-                        __result = GameLocation.OceanCrabPotFishTypes; //override to ocean results
-                    else
-                        __result = GameLocation.DefaultCrabPotFishTypes; //override to freshwater results
+                    __result = data.UseCrabPotTypes;
                 }
             }
             catch (Exception ex)
