@@ -27,7 +27,7 @@ namespace EscasModdingPlugins
         }
 
         /// <inheritdoc/>
-        public void GetFishLocationsData(GameLocation location, Vector2 tile, out string useLocationName, out Vector2? useTile, List<string> useCrabPotTypes)
+        public void GetFishLocationsData(GameLocation location, Vector2 tile, out string useLocationName, out Vector2? useTile, out List<string> useCrabPotTypes)
         {
             //get fishing data for this tile
             var data = TileData.GetDataForTile<FishLocationsData>(HarmonyPatch_FishLocations.AssetName, HarmonyPatch_FishLocations.TilePropertyName, location, (int)tile.X, (int)tile.Y);
