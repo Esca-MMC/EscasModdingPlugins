@@ -3,13 +3,9 @@ using Microsoft.Xna.Framework;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Internal;
-using StardewValley.Locations;
-using StardewValley.Objects;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
-using xTile.Dimensions;
 
 namespace EscasModdingPlugins
 {

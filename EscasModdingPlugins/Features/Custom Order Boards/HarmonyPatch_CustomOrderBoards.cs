@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
-using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.GameData.SpecialOrders;
 using StardewValley.Menus;
 using StardewValley.SpecialOrders;
 using System;
