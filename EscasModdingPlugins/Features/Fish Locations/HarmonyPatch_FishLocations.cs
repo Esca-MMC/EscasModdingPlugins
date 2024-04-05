@@ -164,7 +164,7 @@ namespace EscasModdingPlugins
             {
                 var data = TileData.GetDataForTile<FishLocationsData>(AssetName, TilePropertyName, __instance, (int)tile.X, (int)tile.Y); //get fishing location data for this tile
 
-                if (data.UseCrabPotTypes != null) //if a list of crab types exists for this tile
+                if (data?.UseCrabPotTypes != null) //if a list of crab types exists for this tile
                 {
                     if (Monitor.IsVerbose)
                         Monitor.VerboseLog($"Using custom crab pot results ({string.Join(", ", data.UseCrabPotTypes)}) at {__instance?.Name} ({tile.X},{tile.Y}).");
