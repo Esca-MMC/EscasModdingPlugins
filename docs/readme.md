@@ -61,3 +61,4 @@ See the Stardew Valley Wiki's [Modding:Translations](https://stardewvalleywiki.c
 Language | File | Contributor(s)
 ---------|------|------------
 English | [default.json](https://github.com/Esca-MMC/EscasModdingPlugins/blob/master/EscasModdingPlugins/i18n/default.json) | [Esca-MMC](https://github.com/Esca-MMC)
+Italian | [it.json](https://github.com/Esca-MMC/EscasModdingPlugins/blob/master/EscasModdingPlugins/i18n/it.json) | [Orkamaial](https://www.nexusmods.com/users/181358142)
