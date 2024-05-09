@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using ContentPatcher;
+using HarmonyLib;
 using StardewModdingAPI;
+using System;
 
 namespace EscasModdingPlugins
 {
@@ -22,6 +24,9 @@ namespace EscasModdingPlugins
 
             //initialize mod interactions
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeModInteractions;
+
+            //initialize Content Patcher tokens
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeCPTokens;
 
             //initialize Harmony and mod features
             Harmony harmony = new Harmony(ModManifest.UniqueID);
@@ -47,6 +52,25 @@ namespace EscasModdingPlugins
 
             //water color
             WaterColor.Enable(helper, Monitor);
+        }
+
+        /// <summary>Initializes Content Patcher tokens through its API, if available.</summary>
+        private void GameLoop_GameLaunched_InitializeCPTokens(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            try
+            {
+                var api = Helper.ModRegistry.GetApi<IContentPatcherAPI>("Pathoschild.ContentPatcher"); //try to get CP's API
+
+                if (api == null)
+                    return;
+
+                //initialize EMP's custom tokens
+                api.RegisterToken(ModManifest, "GameStateQuery", new GameStateQueryToken());
+            }
+            catch (Exception ex)
+            {
+                Monitor.Log($"An error occurred while initializing Content Patcher tokens. Content packs that rely on EMP's tokens might not work correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
+            }
         }
 
         /// <summary>Initializes mod interactions when all mods have finished loading.</summary>
