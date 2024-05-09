@@ -6,6 +6,8 @@ See [the main readme](readme.md) for other information about EMP.
 ## Contents
 * [Bed Placement](#bed-placement)
   * [Pass Out Safely](#pass-out-safely)
+* [Content Patcher Tokens](#content_patcher_tokens)
+  * [Game State Query](#game-state-query)
 * [Custom Order Boards](#custom-order-boards)
 * [Destroyable Bushes](#destroyable-bushes)
 * [Fish Locations](#fish-locations)
@@ -30,6 +32,37 @@ Note that this specifically prevents money loss and receiving a letter about bei
 To enable this feature at a location, add the map property `Esca.EMP/PassOutSafely` and set its value to `true`:
 
 ![Esca.EMP/PassOutSafely: true](images/PassOutSafely_MapProperty.png)
+
+## Content Patcher Tokens
+EMP adds the following custom tokens to Content Patcher. To enable them, do **one** of the following:
+
+A) Add EMP as a dependency in your mod's "manifest.json" file: `"Dependencies": [{"UniqueID": "Esca.EMP"}]`
+
+B) Whenever you use a token from EMP, include this "When" condition as well: `"HasMod": "Esca.EMP"`
+
+### Game State Query
+The `Esca.EMP/GameStateQuery` token can be used to check a [game state query (GSQ)](https://stardewvalleywiki.com/Modding:Game_state_queries) in Content Patcher. It will return either "True" or "False". It while be inactive until a save is loaded, e.g. while on the main menu.
+
+Note that this token uses the same update rate as any others. Its value will only change at the specified update rate for each patch (at the start of each day, by default). GSQs might also be slightly slower than other tokens, so if another token can achieve the same goal, use that instead.
+
+Format example:
+
+```js
+{
+  "Format": "2.0.0",
+  "Changes": [
+    {
+      "Action": "EditImage",
+      "Target": "Maps/springobjects",
+      "FromFile": "assets/My_Edited_SpringObjects.png",
+      "When": {
+        "Esca.EMP/GameStateQuery: PLAYER_STAT Current monstersKilled 0 0": "true" /* when the local player has never killed any monsters */
+      },
+      "Update": "OnTimeChange" /* update this edit whenever time changes */
+    }
+  ]
+}
+```
 
 ## Custom Order Boards
 This feature allows mods to add new Special Orders boards that only display orders from a custom category ("OrderType"). See the wiki's guide to the [Data/SpecialOrders](https://stardewvalleywiki.com/Modding:Special_orders) asset for information about creating special orders.
