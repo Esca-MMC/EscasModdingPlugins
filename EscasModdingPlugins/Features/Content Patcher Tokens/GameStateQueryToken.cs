@@ -111,15 +111,19 @@ namespace EscasModdingPlugins
         public IEnumerable<string> GetValues(string input)
         {
             if (string.IsNullOrEmpty(input))
-                yield return "False";
-
-            if (QueryResultsCache.Value.ContainsKey(input) == false) //if no cached result exists for this query
             {
-                bool newResult = GameStateQuery.CheckConditions(input); //check the query and get its current result
-                QueryResultsCache.Value[input] = newResult; //cache it
+                yield return "False";
             }
+            else
+            {
+                if (QueryResultsCache.Value.ContainsKey(input) == false) //if no cached result exists for this query
+                {
+                    bool newResult = GameStateQuery.CheckConditions(input); //check the query and get its current result
+                    QueryResultsCache.Value[input] = newResult; //cache it
+                }
 
-            yield return QueryResultsCache.Value[input].ToString(); //return the result as a string ("True" or "False")
+                yield return QueryResultsCache.Value[input].ToString(); //return the result as a string ("True" or "False")
+            }
         }
     }
 }
