@@ -8,6 +8,7 @@ See [the main readme](readme.md) for other information about EMP.
   * [Pass Out Safely](#pass-out-safely)
 * [Content Patcher Tokens](#content-patcher-tokens)
   * [Game State Query](#game-state-query)
+  * [Player Stats](#player-stats)
 * [Custom Order Boards](#custom-order-boards)
 * [Destroyable Bushes](#destroyable-bushes)
 * [Fish Locations](#fish-locations)
