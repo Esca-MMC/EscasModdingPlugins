@@ -43,7 +43,7 @@ The table below summarizes each feature EMP provides for other mods.
 Feature | Summary
 --------|--------
 Bed Placement | Allow players to place moveable (furniture) beds at a location. Also includes an option to prevent money loss and NPC "rescue" letters if players run out of stamina at a location.
-Content Patcher Tokens | Adds the "Esca.EMP/GameStateQuery" token to Content Patcher, which allows content packs to use GSQs as "When" conditions. (See the [game state queries](https://stardewvalleywiki.com/Modding:Game_state_queries) wiki page.)
+Content Patcher Tokens | Adds additional tokens to Content Patcher for additional control, such as a [Game State Query](https://stardewvalleywiki.com/Modding:Game_state_queries) token.
 Custom Order Boards | Create new Special Orders boards that only display orders from a custom category. (See the [Data/SpecialOrders](https://stardewvalleywiki.com/Modding:Special_orders) asset.)
 Destroyable Bushes | Mark bushes as destroyable at specific locations and/or tiles, allowing players to remove them with any upgraded axe.
 Fish Locations | Give locations multiple "zones" with different fish, including fish from other locations. (See the [Data/Locations](https://stardewvalleywiki.com/Modding:Location_data) asset.)
