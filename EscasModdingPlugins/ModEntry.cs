@@ -22,17 +22,20 @@ namespace EscasModdingPlugins
             //load config.json
             ModConfig.Initialize(helper, Monitor);
 
-            //initialize mod interactions
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeModInteractions;
+            //initialize GMCM config menu
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeGMCM;
 
-            //initialize Content Patcher tokens
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeCPTokens;
-
-            //initialize Harmony and mod features
+            //initialize Harmony
             Harmony harmony = new Harmony(ModManifest.UniqueID);
 
-            //fish locations
-            HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
+            /* initialize mod features */
+
+            //bed placement
+            HarmonyPatch_BedPlacement.ApplyPatch(harmony, Monitor);
+            HarmonyPatch_PassOutSafely.ApplyPatch(harmony, Monitor);
+
+            //Content Patcher tokens
+            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeCPTokens;
 
             //custom order boards
             HarmonyPatch_CustomOrderBoards.ApplyPatch(harmony, Monitor);
@@ -42,9 +45,8 @@ namespace EscasModdingPlugins
             //destroyable bushes
             HarmonyPatch_DestroyableBushes.ApplyPatch(harmony, Monitor);
 
-            //bed placement
-            HarmonyPatch_BedPlacement.ApplyPatch(harmony, Monitor);
-            HarmonyPatch_PassOutSafely.ApplyPatch(harmony, Monitor);
+            //fish locations
+            HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
 
             //kitchen features
             ActionKitchen.Enable(Monitor);
@@ -52,6 +54,12 @@ namespace EscasModdingPlugins
 
             //water color
             WaterColor.Enable(helper, Monitor);
+        }
+
+        /// <summary>Initializes this mod's GMCM config menu.</summary>
+        private void GameLoop_GameLaunched_InitializeGMCM(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            ModInteractions.GMCM.Initialize(Helper, Monitor, ModManifest);
         }
 
         /// <summary>Initializes Content Patcher tokens through its API, if available.</summary>
@@ -72,12 +80,6 @@ namespace EscasModdingPlugins
             {
                 Monitor.Log($"An error occurred while initializing Content Patcher tokens. Content packs that rely on EMP's tokens might not work correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
             }
-        }
-
-        /// <summary>Initializes mod interactions when all mods have finished loading.</summary>
-        private void GameLoop_GameLaunched_InitializeModInteractions(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
-        {
-            ModInteractions.GMCM.Initialize(Helper, Monitor, ModManifest);
         }
 
         /**************/
