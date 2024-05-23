@@ -53,22 +53,22 @@ namespace EscasModdingPlugins
                 }
             }
 
-            Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.getFish\".");
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.getFish\".");
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.getFish)),
                 prefix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Prefix_getFish))
             );
 
-            Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.GetFishFromLocationData\".");
+            Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": prefixing method \"GameLocation.GetFishFromLocationData\".");
             harmony.Patch(
                 original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.GetFishFromLocationData), new Type[] { typeof(string), typeof(Vector2), typeof(int), typeof(Farmer), typeof(bool), typeof(bool), typeof(GameLocation), typeof(ItemQueryContext) }),
                 prefix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Prefix_GetFishFromLocationData))
             );
 
             Monitor.Log($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing every implementation of method \"GameLocation.GetCrabPotFishForTile\".", LogLevel.Trace);
-            foreach (var type in crabPotMethods) //for each unique version of the crab pot method
+            foreach (Type type in crabPotMethods) //for each unique version of the crab pot method
             {
-                Monitor.VerboseLog($"Applying Harmony patch \"{nameof(HarmonyPatch_FishLocations)}\": postfixing method \"{type.Name}.GetCrabPotFishForTile\".");
+                Monitor.Log($"-- Postfixing method \"{type.Name}.GetCrabPotFishForTile\".");
                 harmony.Patch(
                     original: AccessTools.Method(type, nameof(GameLocation.GetCrabPotFishForTile), new[] { typeof(Vector2) }),
                     postfix: new HarmonyMethod(typeof(HarmonyPatch_FishLocations), nameof(Postfix_GetCrabPotFishForTile))
