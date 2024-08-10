@@ -1,11 +1,7 @@
 ﻿using StardewModdingAPI;
+using StardewValley;
 using StardewValley.Delegates;
 using StardewValley.Triggers;
-using System;
-using StardewValley;
-using StardewValley.Buildings;
-using Microsoft.Xna.Framework;
-using StardewValley.GameData.Buildings;
 
 namespace EscasModdingPlugins
 {

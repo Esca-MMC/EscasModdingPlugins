@@ -1,7 +1,6 @@
 ﻿using ContentPatcher;
 using HarmonyLib;
 using StardewModdingAPI;
-using StardewValley.Triggers;
 using System;
 
 namespace EscasModdingPlugins
