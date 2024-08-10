@@ -1,0 +1,8 @@
+﻿{
+	"Config.PlaceBedsAnywhere.Name": "将床放在任何地方",
+	"Config.PlaceBedsAnywhere.Description": "启用后，您可以将床放置在任何位置.",
+	"Config.PlaceMiniFridgesAnywhere.Name": "将迷你冰箱放在任何地方",
+	"Config.PlaceMiniFridgesAnywhere.Description": "如果启用，您可以将迷你冰箱放置在任何位置.",
+	"Config.PassOutSafelyEverywhere.Name": "在任何地方安全昏倒",
+	"Config.PassOutSafelyEverywhere.Description": "如果启用，如果您因睡得太晚（凌晨 2：00）而昏倒，您不会赔钱。注意：这不会改变健康耗尽时发生的情况."
+}
