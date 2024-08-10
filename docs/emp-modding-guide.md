@@ -16,6 +16,8 @@ See [the main readme](readme.md) for other information about EMP.
   * [Using the data asset](#using-the-data-asset)
 * [Kitchen Features](#kitchen-features)
   * [Allow Mini-Fridges](#allow-mini-fridges)
+* [Trigger Actions](#trigger-actions)
+  * [Log Message](#log-message)
 * [Water Color](#water-color)
 
 ## Bed Placement
@@ -35,7 +37,7 @@ To enable this feature at a location, add the map property `Esca.EMP/PassOutSafe
 ![Esca.EMP/PassOutSafely: true](images/PassOutSafely_MapProperty.png)
 
 ## Content Patcher Tokens
-EMP adds the following custom tokens to Content Patcher. To enable them, do **one** of the following:
+EMP adds the following custom tokens to Content Patcher. To enable them, you must do at least **one** of the following:
 
 A) Add EMP as a dependency in your mod's "manifest.json" file: `"Dependencies": [{"UniqueID": "Esca.EMP"}]`
 
@@ -207,6 +209,42 @@ This feature allows players to place [Mini-Fridges](https://stardewvalleywiki.co
 To enable mini-fridge placement at a location, add the map property `Esca.EMP/AllowMiniFridges` and set its value to `true`:
 
 ![Esca.EMP/AllowMiniFridges: true](images/AllowMiniFridges_MapProperty.png)
+
+## Trigger Actions
+EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
+
+### Log Message
+The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI log.
+
+The action uses this format: `"Esca.EMP_LogMessage <log level> <message>"`
+
+* "Log level" is the message's category, which mainly affects color and visibility in the SMAPI console. Valid log levels are Trace, Debug, Info, Warn, Error, and Alert.
+* "Message" is the text you want to display in the log. For clarity, please start your messages with your mod's ID.
+
+Below is an example of a trigger action that gives the local player 10g, then displays a log message.
+
+```js
+{
+  "Format": "2.0.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_AddMoney": {
+            "Id": "{{ModId}}_AddMoney",
+            "Trigger": "DayStarted",
+            "Actions": [
+				"AddMoney 10",
+				"Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
+			]
+        }
+    }
+  ]
+}
+```
+
+Log output: `[00:00:00 INFO  Esca's Modding Plugins] Your.Mod.ID.Here: You just gained 10g!`
 
 ## Water Color
 This feature allows mods to change the color of water at a location.
