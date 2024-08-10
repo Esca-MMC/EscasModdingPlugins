@@ -1,16 +1,19 @@
 ﻿using ContentPatcher;
 using HarmonyLib;
 using StardewModdingAPI;
+using StardewValley.Triggers;
 using System;
 
 namespace EscasModdingPlugins
 {
     public class ModEntry : Mod
     {
-        /// <summary>The beginning of each each map/tile property name implemented by this mod.</summary>
-        public static readonly string PropertyPrefix = "Esca.EMP/";
         /// <summary>The beginning of each asset name implemented by this mod.</summary>
         public static readonly string AssetPrefix = "Mods/Esca.EMP/";
+        /// <summary>The beginning of each each map/tile property name implemented by this mod.</summary>
+        public static readonly string PropertyPrefix = "Esca.EMP/";
+        /// <summary>The beginning of each each trigger action implemented by this mod.</summary>
+        public static readonly string TriggerActionPrefix = "Esca.EMP_";
 
         /// <summary>Runs once after all mods are loaded by SMAPI. Initializes file data, events, and Harmony patches.</summary>
         public override void Entry(IModHelper helper)
@@ -52,6 +55,9 @@ namespace EscasModdingPlugins
             ActionKitchen.Enable(Monitor);
             HarmonyPatch_AllowMiniFridges.ApplyPatch(harmony, Monitor);
 
+            //trigger actions
+            Helper.Events.GameLoop.GameLaunched += GameLoop_InitializeTriggerActions;
+
             //water color
             WaterColor.Enable(helper, Monitor);
         }
@@ -62,7 +68,7 @@ namespace EscasModdingPlugins
             ModInteractions.GMCM.Initialize(Helper, Monitor, ModManifest);
         }
 
-        /// <summary>Initializes Content Patcher tokens through its API, if available.</summary>
+        /// <summary>Initializes custom Content Patcher tokens through its API, if available.</summary>
         private void GameLoop_GameLaunched_InitializeCPTokens(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             try
@@ -80,6 +86,12 @@ namespace EscasModdingPlugins
             {
                 Monitor.Log($"An error occurred while initializing Content Patcher tokens. Content packs that rely on EMP's tokens might not work correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
             }
+        }
+
+        /// <summary>Initializes custom trigger actions and related features.</summary>
+        private void GameLoop_InitializeTriggerActions(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            TriggerAction_LogMessage.Enable(Monitor);
         }
 
         /**************/
