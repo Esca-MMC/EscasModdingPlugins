@@ -90,7 +90,13 @@ namespace EscasModdingPlugins
         /// <summary>Initializes custom trigger actions and related features.</summary>
         private void GameLoop_InitializeTriggerActions(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
+            //actions
             TriggerAction_LogMessage.Enable(Monitor);
+
+            //triggers
+            Trigger_OneSecondUpdateTicked.Enable(Monitor, Helper);
+            Trigger_TimeChanged.Enable(Monitor, Helper);
+            Trigger_UpdateTicked.Enable(Monitor, Helper);
         }
 
         /**************/

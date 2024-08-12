@@ -5,7 +5,7 @@ using StardewValley.Triggers;
 
 namespace EscasModdingPlugins
 {
-    /// <summary>A trigger action that adds a building to a location.</summary>
+    /// <summary>A trigger action that logs a message to the SMAPI console and log file.</summary>
     public class TriggerAction_LogMessage
     {
         /// <summary>The name of the trigger action added by this class.</summary>
