@@ -1,5 +1,6 @@
 ﻿using StardewModdingAPI;
 using StardewValley.Triggers;
+using StardewModdingAPI.Events;
 
 namespace EscasModdingPlugins
 {
@@ -12,6 +13,8 @@ namespace EscasModdingPlugins
 		public static bool Enabled { get; private set; } = false;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
+        /// <summary>The helper instance to use to register events, etc.</summary>
+        private static IModHelper Helper { get; set; } = null;
 
         /// <summary>Initializes this class and enables its features.</summary>
         /// <param name="monitor">The monitor instance to use for console/log messages.</param>
@@ -22,17 +25,27 @@ namespace EscasModdingPlugins
                 return;
 
             Monitor = monitor;
+            Helper = helper;
+
             TriggerName = ModEntry.TriggerActionPrefix + "GameLaunched";
 
             TriggerActionManager.RegisterTrigger(TriggerName);
-            helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched;
+            helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;
 
             Enabled = true;
         }
 
-        private static void GameLoop_GameLaunched(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        /// <summary>Raises this trigger after the game's first update tick is completed.</summary>
+        /// <remarks>
+        /// Raising this trigger during an actual GameLaunched event would cause timing issues, e.g. it might fire before Content Patcher has edited data assets.
+        /// 
+        /// Instead, this trigger is raised after the game's first update tick is completed, which should be acceptable for most use cases.
+        /// </remarks>
+        [EventPriority(EventPriority.Low)]
+        private static void GameLoop_UpdateTicked(object sender, StardewModdingAPI.Events.UpdateTickedEventArgs e)
         {
             TriggerActionManager.Raise(TriggerName);
+            Helper.Events.GameLoop.UpdateTicked -= GameLoop_UpdateTicked; //unregister this event after it happens once
         }
     }
 }
