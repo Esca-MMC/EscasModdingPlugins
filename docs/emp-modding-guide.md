@@ -214,7 +214,7 @@ To enable mini-fridge placement at a location, add the map property `Esca.EMP/Al
 EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
 ### Log Message
-The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI log.
+The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI console and log file.
 
 The action uses this format: `"Esca.EMP_LogMessage <log level> <message>"`
 
