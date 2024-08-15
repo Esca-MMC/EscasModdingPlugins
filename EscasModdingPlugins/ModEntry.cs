@@ -50,6 +50,9 @@ namespace EscasModdingPlugins
             //fish locations
             HarmonyPatch_FishLocations.ApplyPatch(harmony, Monitor);
 
+            //game state queries
+            Helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeGameStateQueries;
+
             //kitchen features
             ActionKitchen.Enable(Monitor);
             HarmonyPatch_AllowMiniFridges.ApplyPatch(harmony, Monitor);
@@ -85,6 +88,12 @@ namespace EscasModdingPlugins
             {
                 Monitor.Log($"An error occurred while initializing Content Patcher tokens. Content packs that rely on EMP's tokens might not work correctly. Full error message: \n{ex.ToString()}", LogLevel.Error);
             }
+        }
+
+        /// <summary>Initializes custom Game State Queries (a.k.a. GSQs or queries) and related features.</summary>
+        private void GameLoop_GameLaunched_InitializeGameStateQueries(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
+        {
+            GSQ_Has_Mod.Enable(Helper);
         }
 
         /// <summary>Initializes custom trigger actions and related features.</summary>
