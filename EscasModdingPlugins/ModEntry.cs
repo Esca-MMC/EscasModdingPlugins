@@ -94,11 +94,10 @@ namespace EscasModdingPlugins
             TriggerAction_LogMessage.Enable(Monitor);
 
             //triggers
-            Trigger_GameLaunched.Enable(Monitor, Helper);
-            Trigger_ReturnedToTitle.Enable(Monitor, Helper);
-            Trigger_OneSecondUpdateTicked.Enable(Monitor, Helper);
-            Trigger_TimeChanged.Enable(Monitor, Helper);
-            Trigger_UpdateTicked.Enable(Monitor, Helper);
+            Trigger_GameLaunched.Enable(Helper);
+            Trigger_ReturnedToTitle.Enable(Helper);
+            Trigger_OneSecondUpdateTicked.Enable(Helper);
+            Trigger_TimeChanged.Enable(Helper);
         }
 
         /**************/

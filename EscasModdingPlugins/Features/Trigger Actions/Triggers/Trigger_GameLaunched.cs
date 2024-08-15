@@ -11,20 +11,16 @@ namespace EscasModdingPlugins
         public static string TriggerName { get; set; } = null;
         /// <summary>True if this class's behavior is currently enabled.</summary>
 		public static bool Enabled { get; private set; } = false;
-        /// <summary>The monitor instance to use for console/log messages.</summary>
-        private static IMonitor Monitor { get; set; } = null;
         /// <summary>The helper instance to use to register events, etc.</summary>
         private static IModHelper Helper { get; set; } = null;
 
         /// <summary>Initializes this class and enables its features.</summary>
-        /// <param name="monitor">The monitor instance to use for console/log messages.</param>
         /// <param name="helper">The helper instance to use during initialization, e.g. to register events.</param>
-        public static void Enable(IMonitor monitor, IModHelper helper)
+        public static void Enable(IModHelper helper)
         {
             if (Enabled)
                 return;
 
-            Monitor = monitor;
             Helper = helper;
 
             TriggerName = ModEntry.TriggerActionPrefix + "GameLaunched";
