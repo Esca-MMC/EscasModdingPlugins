@@ -1,6 +1,6 @@
 ﻿using StardewModdingAPI;
-using StardewValley.Triggers;
 using StardewModdingAPI.Events;
+using StardewValley.Triggers;
 
 namespace EscasModdingPlugins
 {
