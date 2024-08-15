@@ -94,6 +94,7 @@ namespace EscasModdingPlugins
         private void GameLoop_GameLaunched_InitializeGameStateQueries(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
             GSQ_Has_Mod.Enable(Helper);
+            GSQ_SMAPI_Contexts.Enable(Helper);
         }
 
         /// <summary>Initializes custom trigger actions and related features.</summary>
