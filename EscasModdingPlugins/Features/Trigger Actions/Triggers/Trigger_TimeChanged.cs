@@ -18,7 +18,7 @@ namespace EscasModdingPlugins
             if (Enabled)
                 return;
 
-            TriggerName = ModEntry.TriggerActionPrefix + "TimeChanged";
+            TriggerName = ModEntry.OtherPrefix + "TimeChanged";
 
             TriggerActionManager.RegisterTrigger(TriggerName);
             helper.Events.GameLoop.TimeChanged += GameLoop_TimeChanged;

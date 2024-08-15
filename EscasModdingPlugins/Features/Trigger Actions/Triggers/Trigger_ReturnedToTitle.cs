@@ -18,7 +18,7 @@ namespace EscasModdingPlugins
             if (Enabled)
                 return;
 
-            TriggerName = ModEntry.TriggerActionPrefix + "ReturnedToTitle";
+            TriggerName = ModEntry.OtherPrefix + "ReturnedToTitle";
 
             TriggerActionManager.RegisterTrigger(TriggerName);
             helper.Events.GameLoop.ReturnedToTitle += GameLoop_ReturnedToTitle;

@@ -23,7 +23,7 @@ namespace EscasModdingPlugins
                 return;
 
             Monitor = monitor;
-            TriggerActionName = ModEntry.TriggerActionPrefix + "LogMessage";
+            TriggerActionName = ModEntry.OtherPrefix + "LogMessage";
 
             TriggerActionManager.RegisterAction(TriggerActionName, LogMessage);
 

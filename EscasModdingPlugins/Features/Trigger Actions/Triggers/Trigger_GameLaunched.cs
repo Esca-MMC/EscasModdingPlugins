@@ -23,7 +23,7 @@ namespace EscasModdingPlugins
 
             Helper = helper;
 
-            TriggerName = ModEntry.TriggerActionPrefix + "GameLaunched";
+            TriggerName = ModEntry.OtherPrefix + "GameLaunched";
 
             TriggerActionManager.RegisterTrigger(TriggerName);
             helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked;

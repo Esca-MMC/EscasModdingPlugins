@@ -11,8 +11,8 @@ namespace EscasModdingPlugins
         public static readonly string AssetPrefix = "Mods/Esca.EMP/";
         /// <summary>The beginning of each each map/tile property name implemented by this mod.</summary>
         public static readonly string PropertyPrefix = "Esca.EMP/";
-        /// <summary>The beginning of each each trigger action implemented by this mod.</summary>
-        public static readonly string TriggerActionPrefix = "Esca.EMP_";
+        /// <summary>The beginning of each action, query, etc implemented by this mod. Complies with the "unique string ID" format recommended for SDV 1.6.</summary>
+        public static readonly string OtherPrefix = "Esca.EMP_";
 
         /// <summary>Runs once after all mods are loaded by SMAPI. Initializes file data, events, and Harmony patches.</summary>
         public override void Entry(IModHelper helper)

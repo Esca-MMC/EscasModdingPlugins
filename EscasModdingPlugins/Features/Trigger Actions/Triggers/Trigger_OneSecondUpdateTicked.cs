@@ -18,7 +18,7 @@ namespace EscasModdingPlugins
             if (Enabled)
                 return;
 
-            TriggerName = ModEntry.TriggerActionPrefix + "OneSecondUpdateTicked";
+            TriggerName = ModEntry.OtherPrefix + "OneSecondUpdateTicked";
 
             TriggerActionManager.RegisterTrigger(TriggerName);
             helper.Events.GameLoop.OneSecondUpdateTicked += GameLoop_OneSecondUpdateTicked;
