@@ -39,7 +39,7 @@ namespace EscasModdingPlugins
             //initialize assets/properties
             AssetName = ModEntry.AssetPrefix + "FishLocations"; //create asset name
             TilePropertyName = ModEntry.PropertyPrefix + "FishLocations"; //create tile property name
-            AssetHelper.SetDefault(AssetName, new Dictionary<string, FishLocationsData>()); //create a default instance for the asset
+            AssetHelper.SetDefault(AssetName, () => new Dictionary<string, FishLocationsData>()); //create a default instance generator for the asset
 
             //get methods to patch dynamically
             HashSet<Type> crabPotMethods = new HashSet<Type>(); //every type with a unique GameLocation.GetCrabPotFishForTile(Vector2)

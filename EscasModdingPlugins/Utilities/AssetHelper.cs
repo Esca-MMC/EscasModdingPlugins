@@ -1,4 +1,5 @@
 ﻿using StardewModdingAPI;
+using System;
 using System.Collections.Generic;
 
 namespace EscasModdingPlugins
@@ -15,7 +16,7 @@ namespace EscasModdingPlugins
         /// <summary>True if this class is initialized and ready to use.</summary>
         internal static bool Initialized { get; set; } = false;
 
-        private static Dictionary<string, object> Defaults = new Dictionary<string, object>();
+        private static Dictionary<string, Func<object>> Defaults = new Dictionary<string, Func<object>>();
         private static Dictionary<string, object> Cache = new Dictionary<string, object>();
         private static IModHelper Helper = null;
 
@@ -61,28 +62,28 @@ namespace EscasModdingPlugins
         /// <summary>Gets the default instance of the named asset if one is available.</summary>
         /// <typeparam name="T">The asset's type.</typeparam>
         /// <param name="normalizedAssetName">The asset's normalized name. See <see cref="IAssetInfo.AssetName"/> or <see cref="IContentHelper.NormalizeAssetName(string)"/>.</param>
-        /// <param name="defaultAsset">The asset's default instance.</param>
+        /// <param name="defaultAsset">A default instance of the asset.</param>
         /// <returns>True if a default instance exists for this asset. False otherwise.</returns>
         internal static bool TryGetDefault<T>(string normalizedAssetName, out T defaultAsset)
         {
-            if (Defaults.TryGetValue(normalizedAssetName, out object asset)) //if this asset has a default to load
+            if (Defaults.TryGetValue(normalizedAssetName, out Func<object> getNewDefaultAsset)) //if this asset has a default to load
             {
-                defaultAsset = (T)asset; //output the default asset as the given type
+                defaultAsset = (T)getNewDefaultAsset.Invoke(); //generate a new default instance of this asset, cast it as the given type, and return it
                 return true; //success
             }
             else //if this asset does NOT have a default to load
             {
-                defaultAsset = default(T); //output the given type's default value (e.g. null)
+                defaultAsset = default(T); //return the given type's default value (e.g. null)
                 return false; //failure
             }
         }
 
-        /// <summary>Sets a default instance to load for the named asset.</summary>
+        /// <summary>Sets a default instance generator for the named asset, which allows this class to create and manage the asset.</summary>
         /// <param name="assetName">The asset name, e.g. "Characters/Abigail".</param>
-        /// <param name="defaultAsset">The default instance to use for this asset.</param>
-        internal static void SetDefault(string assetName, object defaultAsset)
+        /// <param name="getNewDefaultAsset">A method that returns a new default instance for this asset, e.g. a blank dictionary with the appropriate key/value types.</param>
+        internal static void SetDefault(string assetName, Func<object> getNewDefaultAsset)
         {
-            Defaults[Helper.GameContent.ParseAssetName(assetName).Name] = defaultAsset; //normalize the asset name and store the default instance
+            Defaults[Helper.GameContent.ParseAssetName(assetName).Name] = getNewDefaultAsset; //normalize the asset name and store the default instance
         }
 
         /// <summary>Checks whether this asset name has a default instance to load.</summary>
@@ -127,7 +128,6 @@ namespace EscasModdingPlugins
         /************************/
 
         /// <summary>Loads default instances of any new assets created by this mod.</summary>
-        /// <remarks>This is a replacement for the IAssetLoader system, which was deprecated in SMAPI v3.14.</remarks>
         private static void AssetRequested_LoadDefaults(object sender, StardewModdingAPI.Events.AssetRequestedEventArgs e)
         {
             if (TryGetDefault(e.Name.Name, out object defaultAsset)) //if a default instance exists for this asset
