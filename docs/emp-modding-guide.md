@@ -22,7 +22,8 @@ See [the main readme](readme.md) for other information about EMP.
   * [Game Launched](#game-launched)
   * [One Second Update Ticked](#one-second-update-ticked)
   * [Returned to Title](#returned-to-title)
-  * [Time Changed](time-changed)
+  * [Save Loaded](#save-loaded)
+  * [Time Changed](#time-changed)
 * [Water Color](#water-color)
 
 ## Bed Placement
