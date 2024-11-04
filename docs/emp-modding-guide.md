@@ -18,6 +18,11 @@ See [the main readme](readme.md) for other information about EMP.
   * [Allow Mini-Fridges](#allow-mini-fridges)
 * [Trigger Actions](#trigger-actions)
   * [Log Message](#log-message)
+* [Triggers](#triggers)
+  * [Game Launched](#game-launched)
+  * [One Second Update Ticked](#one-second-update-ticked)
+  * [Returned to Title](#returned-to-title)
+  * [Time Changed](time-changed)
 * [Water Color](#water-color)
 
 ## Bed Placement
@@ -52,7 +57,7 @@ Format example:
 
 ```js
 {
-  "Format": "2.0.0",
+  "Format": "2.4.0",
   "Changes": [
     {
       "LogName": "Edit object sprites while the Night Market is open",
@@ -79,7 +84,7 @@ Format example:
 
 ```js
 {
-  "Format": "2.0.0",
+  "Format": "2.4.0",
   "Changes": [
     {
       "LogName": "Make Parsnip Seeds display the player's total footstep count in their description",
@@ -156,7 +161,7 @@ The asset can be edited with Content Patcher's "EditData" action like any other 
 Below is an example content.json file for a Content Patcher mod. This example changes some areas of the Farm to catch fish from the Forest's pond, and crab pots there will catch "freshwater" results.
 ```js
 {
-  "Format": "2.0.0",
+  "Format": "2.4.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -218,14 +223,14 @@ The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the
 
 The action uses this format: `"Esca.EMP_LogMessage <log level> <message>"`
 
-* "Log level" is the message's category, which mainly affects color and visibility in the SMAPI console. Valid log levels are Trace, Debug, Info, Warn, Error, and Alert.
+* "Log level" is the message's category, which mainly affects color and visibility in the SMAPI console. Valid log levels: Trace, Debug, Info, Warn, Error, Alert
 * "Message" is the text you want to display in the log. For clarity, please start your messages with your mod's ID.
 
 Below is an example of a trigger action that gives the local player 10g, then displays a log message.
 
 ```js
 {
-  "Format": "2.0.0",
+  "Format": "2.4.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -239,12 +244,134 @@ Below is an example of a trigger action that gives the local player 10g, then di
 				"Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
 			]
         }
+      }
     }
   ]
 }
 ```
 
-Log output: `[00:00:00 INFO  Esca's Modding Plugins] Your.Mod.ID.Here: You just gained 10g!`
+Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: You just gained 10g!`
+
+## Triggers
+EMP adds the following custom triggers to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
+
+Use them in the "Trigger" field of `Data/TriggerActions` entries. Example: `""Trigger": "Esca.EMP_GameLaunched"`
+
+### Game Launched
+The `Esca.EMP_GameLaunched` trigger happens exactly once each time the game is launched, after all mods have finished loading.
+
+Below is an example of a trigger action that displays a compatibility message after the game launches.
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_CompatibilityMessage": {
+            "Id": "{{ModId}}_CompatibilityMessage",
+            "Trigger": "Esca.EMP_GameLaunched",
+            "Action": "Esca.EMP_LogMessage Warn {{ModId}}: Hey, you have Recolor A and Recolor B installed! You should probably remove one of them.",
+            "MarkActionApplied": false
+        }
+      },
+      "When": {
+        "HasMod": "Esca.RecolorPackB"
+      },
+    }
+  ]
+}
+```
+
+Log output: `[00:00:00 WARN  Esca's Modding Plugins] Esca.RecolorPackA: Hey, you have Recolor A and Recolor B installed! You should probably remove one of them.`
+
+### One Second Update Ticked
+The `Esca.EMP_OneSecondUpdateTicked` trigger happens once per second, starting after the game is launched. This continues at all times, whether a save is currently loaded or not. Using "When" conditions and/or the "Condition" field is recommended to control when these triggers are active.
+
+Below is an example of a trigger action that gives the player 10g every second, whenever they're in an active game and free to act (not talking to NPCs, viewing events, etc).
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_AddMoney": {
+            "Id": "{{ModId}}_AddMoney",
+            "Trigger": "Esca.EMP_OneSecondUpdateTicked",
+            "Condition": "Esca.EMP_IS_PLAYER_FREE",
+            "Actions": [
+				"AddMoney 10",
+				"Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
+			],
+            "MarkActionApplied": false
+        }
+      },
+    }
+  ]
+}
+```
+
+### Returned to Title
+
+The `Esca.EMP_ReturnedToTitle` trigger happens when players exit a loaded game and return to the main menu (a.k.a. title screen). Note that it does NOT happen when the game is first loaded; for that, see the Game Launched trigger above.
+
+Below is an example of a trigger action that logs a message whenever the player returns to the main menu.
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_ReturnMessage": {
+            "Id": "{{ModId}}_ReturnMessage",
+            "Trigger": "Esca.EMP_ReturnedToTitle",
+            "Action": "Esca.EMP_LogMessage Trace {{ModId}}: Player just exited a save and returned to the main menu.",
+            "MarkActionApplied": false
+        }
+      }
+    }
+  ]
+}
+```
+
+Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: Player just exited a save and returned to the main menu.`
+
+### Time Changed
+
+The `Esca.EMP_TimeChanged` trigger happens whenever the in-game time changes. Note that this does not happen when a save is first created or loaded (i.e. it won't trigger at 6:00 AM on the first day of a gameplay session).
+
+Below is an example of a trigger action that display all time changes in the player's log file.
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_LogTime": {
+            "Id": "{{ModId}}_LogTime",
+            "Trigger": "Esca.EMP_TimeChanged",
+            "Action": "Esca.EMP_LogMessage Info {{ModId}}: The in-game time is now {{Time}}.",
+            "MarkActionApplied": false
+        }
+      },
+	  "Update": "OnTimeChange"
+    }
+  ]
+}
+```
+
+Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: The in-game time is now 0600.`
 
 ## Water Color
 This feature allows mods to change the color of water at a location.
