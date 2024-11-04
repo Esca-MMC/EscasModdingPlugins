@@ -106,6 +106,7 @@ namespace EscasModdingPlugins
             Trigger_GameLaunched.Enable(Helper);
             Trigger_ReturnedToTitle.Enable(Helper);
             Trigger_OneSecondUpdateTicked.Enable(Helper);
+            Trigger_SaveLoaded.Enable(Helper);
             Trigger_TimeChanged.Enable(Helper);
         }
 

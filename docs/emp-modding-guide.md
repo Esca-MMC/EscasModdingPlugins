@@ -318,7 +318,7 @@ Below is an example of a trigger action that gives the player 10g every second, 
 
 ### Returned to Title
 
-The `Esca.EMP_ReturnedToTitle` trigger happens when players exit a loaded game and return to the main menu (a.k.a. title screen). Note that it does NOT happen when the game is first loaded; for that, see the Game Launched trigger above.
+The `Esca.EMP_ReturnedToTitle` trigger happens when players exit a loaded game and return to the main menu (a.k.a. title screen). Note that it does NOT happen when the game is first loaded; for that, use the [Game Launched](#game-launched) trigger.
 
 Below is an example of a trigger action that logs a message whenever the player returns to the main menu.
 
@@ -344,11 +344,41 @@ Below is an example of a trigger action that logs a message whenever the player 
 
 Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: Player just exited a save and returned to the main menu.`
 
+### Save Loaded
+
+The `Esca.EMP_SaveLoaded` trigger happens when the player creates a new game or loads a save. Note that this does not happen when a save is first created or loaded (i.e. it won't trigger at 6:00 AM on the first day of a gameplay session).
+
+Below is an example of a trigger action that logs the local player's name whenever a save is loaded.
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "Action": "EditData",
+      "Target": "Data/TriggerActions",
+      "Entries": {
+        "{{ModId}}_LoadMessage": {
+            "Id": "{{ModId}}_LoadMessage",
+            "Trigger": "Esca.EMP_SaveLoaded",
+            "Action": "Esca.EMP_LogMessage Trace {{ModId}}: Save loaded. Current player: {{PlayerName}}",
+            "MarkActionApplied": false
+        }
+      }
+    }
+  ]
+}
+```
+
+Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: Save loaded. Current player: Esca`
+
 ### Time Changed
 
-The `Esca.EMP_TimeChanged` trigger happens whenever the in-game time changes. Note that this does not happen when a save is first created or loaded (i.e. it won't trigger at 6:00 AM on the first day of a gameplay session).
+The `Esca.EMP_TimeChanged` trigger happens when the in-game time changes.
 
-Below is an example of a trigger action that display all time changes in the player's log file.
+Note that this does NOT happen when a save is created or loaded, i.e. this won't trigger the first time it's 6:00 AM. To do that, combine this with the [Save Loaded](#save-loaded) trigger (see below). Multiple triggers can be used by separating them with spaces.
+
+Below is an example of a trigger action that displays a message whenever the in-game time changes, including when a save is created or loaded.
 
 ```js
 {
@@ -360,7 +390,7 @@ Below is an example of a trigger action that display all time changes in the pla
       "Entries": {
         "{{ModId}}_LogTime": {
             "Id": "{{ModId}}_LogTime",
-            "Trigger": "Esca.EMP_TimeChanged",
+            "Trigger": "Esca.EMP_SaveLoaded Esca.EMP_TimeChanged",
             "Action": "Esca.EMP_LogMessage Info {{ModId}}: The in-game time is now {{Time}}.",
             "MarkActionApplied": false
         }
