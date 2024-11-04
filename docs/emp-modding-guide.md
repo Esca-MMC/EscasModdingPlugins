@@ -240,6 +240,33 @@ Format example:
 }
 ```
 
+## Game State Queries
+EMP adds the following [game state queries (GSQs)](https://stardewvalleywiki.com/Modding:Game_state_queries) to the GSQ system.
+
+Use them in "Condition" fields, EMP's [Game State Query token](#game-state-query) for Content Patcher, or anywhere else that recognizes GSQs. Example: `"Condition": "Esca.EMP_IS_PLAYER_FREE"`
+
+### Can Player Move
+The `Esca.EMP_CAN_PLAYER_MOVE` GSQ is true when the world is ready (see [Is World Ready]), the local player is free (see [Is Player Free](#is-player-free)), and they're allowed to move around. For example, it's false while the player is actively using a tool.
+
+Based on SMAPI's [Context.CanPlayerMove](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
+
+### Is Player Free
+The `Esca.EMP_IS_PLAYER_FREE` GSQ is true when the world is ready (see [Is World Ready]) and the local player is free to act. For example, it's false while the player has a menu open, is talking to an NPC, or is watching an event.
+
+Based on SMAPI's [Context.IsPlayerFree](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
+
+### Is Split Screen
+The `Esca.IS_SPLIT_SCREEN` GSQ is true when the local player is connected to a split-screen multiplayer session.
+
+Note that the Stardew already includes the `IS_MULTIPLAYER` GSQ, which is true when connected to any multiplayer session.
+
+Based on SMAPI's [Context.IsSplitScreen](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
+
+### Is World Ready
+The `Esca.EMP_IS_WORLD_READY` GSQ is true when the local player has finished loading a save (or loading into a multiplayer session) and the in-game world is fully initialized.
+
+Based on SMAPI's [Context.IsWorldReady](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
+
 ## Trigger Actions
 EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
