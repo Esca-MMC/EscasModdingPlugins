@@ -243,15 +243,17 @@ Format example:
 ## Game State Queries
 EMP adds the following [game state queries](https://stardewvalleywiki.com/Modding:Game_state_queries) (GSQs) to the GSQ system.
 
-Use them in "Condition" fields, EMP's [Game State Query token](#game-state-query) for Content Patcher, or anywhere else that recognizes GSQs. Example: `"Condition": "Esca.EMP_IS_PLAYER_FREE"`
+Use them in "Condition" fields, EMP's [Game State Query token](#game-state-query) for Content Patcher, or anywhere else that recognizes GSQs.
+
+Example: `"Condition": "Esca.EMP_IS_PLAYER_FREE"`
 
 ### Can Player Move
-The `Esca.EMP_CAN_PLAYER_MOVE` GSQ is true when the world is ready (see [Is World Ready]), the local player is free (see [Is Player Free](#is-player-free)), and they're allowed to move around. For example, it's false while the player is actively using a tool.
+The `Esca.EMP_CAN_PLAYER_MOVE` GSQ is true when the world is ready (see [Is World Ready](#is-world-ready)), the local player is free (see [Is Player Free](#is-player-free)), and they're allowed to move around. For example, it's false while the player is actively using a tool.
 
 Based on SMAPI's [Context.CanPlayerMove](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
 
 ### Is Player Free
-The `Esca.EMP_IS_PLAYER_FREE` GSQ is true when the world is ready (see [Is World Ready]) and the local player is free to act. For example, it's false while the player has a menu open, is talking to an NPC, or is watching an event.
+The `Esca.EMP_IS_PLAYER_FREE` GSQ is true when the world is ready (see [Is World Ready](#is-world-ready)) and the local player is free to act. For example, it's false while the player has a menu open, is talking to an NPC, or is watching an event.
 
 Based on SMAPI's [Context.IsPlayerFree](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
 
@@ -270,7 +272,9 @@ Based on SMAPI's [Context.IsWorldReady](https://www.stardewvalleywiki.com/Moddin
 ## Trigger Actions
 EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
-Use them in the "Action" or "Actions" fields of `Data/TriggerActions` entries, or in certain similar fields. Example: `"Action": "Esca.EMP_LogMessage Alert Hello World."`
+Use them in the "Action" or "Actions" fields of `Data/TriggerActions` entries, or in certain similar fields.
+
+Example: `"Action": "Esca.EMP_LogMessage Alert Hello World."`
 
 ### Log Message
 The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI console and log file.
@@ -294,9 +298,9 @@ Below is an example of a trigger action that gives the local player 10g, then di
             "Id": "{{ModId}}_AddMoney",
             "Trigger": "DayStarted",
             "Actions": [
-				"AddMoney 10",
-				"Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
-			]
+              "AddMoney 10",
+              "Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
+            ]
         }
       }
     }
@@ -309,7 +313,9 @@ Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: You just gain
 ## Triggers
 EMP adds the following custom triggers to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
-Use them in the "Trigger" field of `Data/TriggerActions` entries. Example: `"Trigger": "Esca.EMP_GameLaunched"`
+Use them in the "Trigger" field of `Data/TriggerActions` entries.
+
+Example: `"Trigger": "Esca.EMP_GameLaunched"`
 
 ### Game Launched
 The `Esca.EMP_GameLaunched` trigger happens exactly once each time the game is launched, after all mods have finished loading.
@@ -359,9 +365,9 @@ Below is an example of a trigger action that gives the player 10g every second, 
             "Trigger": "Esca.EMP_OneSecondUpdateTicked",
             "Condition": "Esca.EMP_IS_PLAYER_FREE",
             "Actions": [
-				"AddMoney 10",
-				"Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
-			],
+              "AddMoney 10",
+              "Esca.EMP_LogMessage Info {{ModId}}: You just gained 10g!"
+            ],
             "MarkActionApplied": false
         }
       },
