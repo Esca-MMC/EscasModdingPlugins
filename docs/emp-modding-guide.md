@@ -3,12 +3,9 @@ This guide explains how to use features from Esca's Modding Plugins (EMP) in oth
 
 See [the main readme](readme.md) for other information about EMP.
 
-## Contents
+## Contents (Game Mechanics)
 * [Bed Placement](#bed-placement)
   * [Pass Out Safely](#pass-out-safely)
-* [Content Patcher Tokens](#content-patcher-tokens)
-  * [Game State Query](#game-state-query)
-  * [Player Stats](#player-stats)
 * [Custom Order Boards](#custom-order-boards)
 * [Destroyable Bushes](#destroyable-bushes)
 * [Fish Locations](#fish-locations)
@@ -16,6 +13,17 @@ See [the main readme](readme.md) for other information about EMP.
   * [Using the data asset](#using-the-data-asset)
 * [Kitchen Features](#kitchen-features)
   * [Allow Mini-Fridges](#allow-mini-fridges)
+* [Water Color](#water-color)
+
+## Contents (Modding Utilities)
+* [Content Patcher Tokens](#content-patcher-tokens)
+  * [Game State Query](#game-state-query)
+  * [Player Stats](#player-stats)
+* [Game State Queries](#game-state-queries)
+  * [Can Player Move](#can-player-move)
+  * [Is Player Free](#is-player-free)
+  * [Is Split Screen](#is-split-screen)
+  * [Is World Ready](#is-world-ready)
 * [Trigger Actions](#trigger-actions)
   * [Log Message](#log-message)
 * [Triggers](#triggers)
@@ -24,7 +32,9 @@ See [the main readme](readme.md) for other information about EMP.
   * [Returned to Title](#returned-to-title)
   * [Save Loaded](#save-loaded)
   * [Time Changed](#time-changed)
-* [Water Color](#water-color)
+
+
+# Game Mechanics
 
 ## Bed Placement
 This feature allows players to place moveable (furniture) beds at additional locations.
@@ -41,66 +51,6 @@ Note that this specifically prevents money loss and receiving a letter about bei
 To enable this feature at a location, add the map property `Esca.EMP/PassOutSafely` and set its value to `true`:
 
 ![Esca.EMP/PassOutSafely: true](images/PassOutSafely_MapProperty.png)
-
-## Content Patcher Tokens
-EMP adds the following custom tokens to Content Patcher. To enable them, you must do at least **one** of the following:
-
-A) Add EMP as a dependency in your mod's "manifest.json" file: `"Dependencies": [{"UniqueID": "Esca.EMP"}]`
-
-B) Whenever you use a token from EMP, add this "When" condition: `"HasMod": "Esca.EMP"`
-
-### Game State Query
-The `Esca.EMP/GameStateQuery` token can be used to check a [game state query (GSQ)](https://stardewvalleywiki.com/Modding:Game_state_queries) in Content Patcher. It returns either "True" or "False". It's only active while a save is fully loaded.
-
-Note that this token uses the same update rates as other tokens. Its value will only change at the specified update rate for your patch (at the start of each day, by default). GSQs might also be slightly slower than other tokens, so if another token can achieve the same goal, use that instead.
-
-Format example:
-
-```js
-{
-  "Format": "2.4.0",
-  "Changes": [
-    {
-      "LogName": "Edit object sprites while the Night Market is open",
-      "Action": "EditImage",
-      "Target": "Maps/springobjects",
-      "FromFile": "assets/My_Edited_SpringObjects.png",
-      "When": {
-        "Esca.EMP/GameStateQuery: IS_PASSIVE_FESTIVAL_OPEN NightMarket": "true"
-      },
-      "Update": "OnTimeChange"
-    }
-  ]
-}
-```
-
-### Player Stats
-The `Esca.EMP/PlayerStat` token can be used to check certain statistics about the local player. It returns the current number of whichever stat you input.
-
-Note that this token only checks stats for the current local player. Due to technical limitations, it can't check other players' stats in multiplayer.
-
-For a list of stats tracked by the base game, check the "PLAYER_STAT" description on [this wiki page](https://stardewvalleywiki.com/Modding:Game_state_queries#Player_info_.26_progress). Mods can also add custom stats with C#, [trigger actions](https://stardewvalleywiki.com/Modding:Trigger_actions), etc.
-
-Format example:
-
-```js
-{
-  "Format": "2.4.0",
-  "Changes": [
-    {
-      "LogName": "Make Parsnip Seeds display the player's total footstep count in their description",
-      "Action": "EditData",
-      "Target": "Data/Objects",
-      "Fields": {
-        "472": {
-          "Description": "Steps Taken: {{Esca.EMP/PlayerStat: stepsTaken}}"
-        }
-      },
-      "Update": "OnTimeChange"
-    }
-  ]
-}
-```
 
 ## Custom Order Boards
 This feature allows mods to add new Special Orders boards that only display orders from a custom category ("OrderType"). See the wiki's guide to the [Data/SpecialOrders](https://stardewvalleywiki.com/Modding:Special_orders) asset for information about creating special orders.
@@ -216,8 +166,84 @@ To enable mini-fridge placement at a location, add the map property `Esca.EMP/Al
 
 ![Esca.EMP/AllowMiniFridges: true](images/AllowMiniFridges_MapProperty.png)
 
+## Water Color
+This feature allows mods to change the color of water at a location.
+
+To use this feature at a location, add the map property `Esca.EMP/WaterColor` and give it one of the following values:
+
+* The name of a color from [C#'s KnownColor list](https://docs.microsoft.com/en-us/dotnet/api/system.drawing.knowncolor). Example: `Esca.EMP/WaterColor` `Red`
+* RGB values from 0 to 255, separated by spaces. Example: `Esca.EMP/WaterColor` `255 0 0`
+* RGBA values from 0 to 255, separated by spaces. Example: `Esca.EMP/WaterColor` `255 0 0 255`
+
+![Esca.EMP/WaterColor: Red](images/WaterColor_MapProperty.png)
+
+
+# Modding Utilities
+
+## Content Patcher Tokens
+EMP adds the following custom tokens to Content Patcher. To enable them, you must do at least **one** of the following:
+
+A) Add EMP as a dependency in your mod's "manifest.json" file: `"Dependencies": [{"UniqueID": "Esca.EMP"}]`
+
+B) Whenever you use a token from EMP, add this "When" condition: `"HasMod": "Esca.EMP"`
+
+### Game State Query
+The `Esca.EMP/GameStateQuery` token can be used to check a [game state query (GSQ)](https://stardewvalleywiki.com/Modding:Game_state_queries) in Content Patcher. It returns either "True" or "False". It's only active while a save is fully loaded.
+
+Note that this token uses the same update rates as other tokens. Its value will only change at the specified update rate for your patch (at the start of each day, by default). GSQs might also be slightly slower than other tokens, so if another token can achieve the same goal, use that instead.
+
+Format example:
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "LogName": "Edit object sprites while the Night Market is open",
+      "Action": "EditImage",
+      "Target": "Maps/springobjects",
+      "FromFile": "assets/My_Edited_SpringObjects.png",
+      "When": {
+        "Esca.EMP/GameStateQuery: IS_PASSIVE_FESTIVAL_OPEN NightMarket": "true"
+      },
+      "Update": "OnTimeChange"
+    }
+  ]
+}
+```
+
+### Player Stats
+The `Esca.EMP/PlayerStat` token can be used to check certain statistics about the local player. It returns the current number of whichever stat you input.
+
+Note that this token only checks stats for the current local player. Due to technical limitations, it can't check other players' stats in multiplayer.
+
+For a list of stats tracked by the base game, check the "PLAYER_STAT" description on [this wiki page](https://stardewvalleywiki.com/Modding:Game_state_queries#Player_info_.26_progress). Mods can also add custom stats with C#, [trigger actions](https://stardewvalleywiki.com/Modding:Trigger_actions), etc.
+
+Format example:
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "LogName": "Make Parsnip Seeds display the player's total footstep count in their description",
+      "Action": "EditData",
+      "Target": "Data/Objects",
+      "Fields": {
+        "472": {
+          "Description": "Steps Taken: {{Esca.EMP/PlayerStat: stepsTaken}}"
+        }
+      },
+      "Update": "OnTimeChange"
+    }
+  ]
+}
+```
+
 ## Trigger Actions
 EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
+
+Use them in the "Action" or "Actions" fields of `Data/TriggerActions` entries. Example: `"Action": "Esca.EMP_LogMessage Alert Hello World."`
 
 ### Log Message
 The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI console and log file.
@@ -256,7 +282,7 @@ Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: You just gain
 ## Triggers
 EMP adds the following custom triggers to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
-Use them in the "Trigger" field of `Data/TriggerActions` entries. Example: `""Trigger": "Esca.EMP_GameLaunched"`
+Use them in the "Trigger" field of `Data/TriggerActions` entries. Example: `"Trigger": "Esca.EMP_GameLaunched"`
 
 ### Game Launched
 The `Esca.EMP_GameLaunched` trigger happens exactly once each time the game is launched, after all mods have finished loading.
@@ -403,14 +429,3 @@ Below is an example of a trigger action that displays a message whenever the in-
 ```
 
 Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: The in-game time is now 0600.`
-
-## Water Color
-This feature allows mods to change the color of water at a location.
-
-To use this feature at a location, add the map property `Esca.EMP/WaterColor` and give it one of the following values:
-
-* The name of a color from [C#'s KnownColor list](https://docs.microsoft.com/en-us/dotnet/api/system.drawing.knowncolor). Example: `Esca.EMP/WaterColor` `Red`
-* RGB values from 0 to 255, separated by spaces. Example: `Esca.EMP/WaterColor` `255 0 0`
-* RGBA values from 0 to 255, separated by spaces. Example: `Esca.EMP/WaterColor` `255 0 0 255`
-
-![Esca.EMP/WaterColor: Red](images/WaterColor_MapProperty.png)
