@@ -258,7 +258,7 @@ The `Esca.EMP_IS_PLAYER_FREE` GSQ is true when the world is ready (see [Is World
 Based on SMAPI's [Context.IsPlayerFree](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
 
 ### Is Split Screen
-The `Esca.IS_SPLIT_SCREEN` GSQ is true when the local player is connected to a split-screen multiplayer session.
+The `Esca.EMP_IS_SPLIT_SCREEN` GSQ is true when the local player is connected to a split-screen multiplayer session.
 
 Note that the Stardew already includes the `IS_MULTIPLAYER` GSQ, which is true when connected to any multiplayer session.
 
