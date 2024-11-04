@@ -36,10 +36,10 @@ namespace EscasModdingPlugins
         {
             //validate and parse arguments
 
-            if (!ArgUtility.TryGetEnum<LogLevel>(args, 1, out LogLevel logLevel, out error)) //a LogLevel name, e.g. LogLevel.Trace
+            if (!ArgUtility.TryGetEnum<LogLevel>(args, 1, out LogLevel logLevel, out error, name: "Log Level Name")) //a LogLevel name, e.g. LogLevel.Trace
                 return false;
 
-            if (!ArgUtility.TryGetRemainder(args, 2, out string message, out error)) //arg 2: all remaining text
+            if (!ArgUtility.TryGetRemainder(args, 2, out string message, out error, name: "Message Text")) //arg 2: all remaining text
                 return false;
 
             //do action
