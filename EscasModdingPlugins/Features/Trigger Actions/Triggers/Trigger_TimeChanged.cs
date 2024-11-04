@@ -1,4 +1,5 @@
 ﻿using StardewModdingAPI;
+using StardewModdingAPI.Events;
 using StardewValley.Triggers;
 
 namespace EscasModdingPlugins
@@ -26,6 +27,7 @@ namespace EscasModdingPlugins
             Enabled = true;
         }
 
+        [EventPriority(EventPriority.Low)] //low priority triggers after Content Patcher's context update, allowing "Update": "OnTimeChange" to update tokens/conditions
         private static void GameLoop_TimeChanged(object sender, StardewModdingAPI.Events.TimeChangedEventArgs e)
         {
             TriggerActionManager.Raise(TriggerName);
