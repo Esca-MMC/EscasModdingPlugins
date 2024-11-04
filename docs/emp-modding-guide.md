@@ -241,7 +241,7 @@ Format example:
 ```
 
 ## Game State Queries
-EMP adds the following [game state queries (GSQs)](https://stardewvalleywiki.com/Modding:Game_state_queries) to the GSQ system.
+EMP adds the following [game state queries](https://stardewvalleywiki.com/Modding:Game_state_queries) (GSQs) to the GSQ system.
 
 Use them in "Condition" fields, EMP's [Game State Query token](#game-state-query) for Content Patcher, or anywhere else that recognizes GSQs. Example: `"Condition": "Esca.EMP_IS_PLAYER_FREE"`
 
@@ -270,7 +270,7 @@ Based on SMAPI's [Context.IsWorldReady](https://www.stardewvalleywiki.com/Moddin
 ## Trigger Actions
 EMP adds the following custom actions to the [trigger action](https://stardewvalleywiki.com/Modding:Trigger_actions) system.
 
-Use them in the "Action" or "Actions" fields of `Data/TriggerActions` entries. Example: `"Action": "Esca.EMP_LogMessage Alert Hello World."`
+Use them in the "Action" or "Actions" fields of `Data/TriggerActions` entries, or in certain similar fields. Example: `"Action": "Esca.EMP_LogMessage Alert Hello World."`
 
 ### Log Message
 The `Esca.EMP_LogMessage` action allows content pack mods to add messages to the SMAPI console and log file.

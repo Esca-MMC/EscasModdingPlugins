@@ -40,16 +40,22 @@ The table below summarizes each feature EMP provides for other mods.
 
 **To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
 
+### Game Mechanics
 Feature | Summary
 --------|--------
 Bed Placement | Allow players to place moveable (furniture) beds at a location. Also includes an option to prevent money loss and NPC "rescue" letters if players run out of stamina at a location.
-Content Patcher Tokens | Adds new tokens to Content Patcher, such as a [Game State Query](https://stardewvalleywiki.com/Modding:Game_state_queries) token.
 Custom Order Boards | Create new Special Orders boards that only display orders from a custom category. (See the [Data/SpecialOrders](https://stardewvalleywiki.com/Modding:Special_orders) asset.)
 Destroyable Bushes | Mark bushes as destroyable at specific locations and/or tiles, allowing players to remove them with any upgraded axe.
 Fish Locations | Give locations multiple "zones" with different fish, including fish from other locations. (See the [Data/Locations](https://stardewvalleywiki.com/Modding:Location_data) asset.)
 Kitchen Features | Allow players to open the cooking menu at non-farmhouse locations, similar to [Action kitchen](https://stardewvalleywiki.com/Modding:Maps#Tile_properties_2). Also includes an option to allow players to place [Mini-Fridges](https://stardewvalleywiki.com/Mini-Fridge).
 Water Color | Change the color of all water at a location.
 
+### Modding Utilities
+Feature | Summary
+--------|--------
+Content Patcher Tokens | Adds new tokens to [Content Patcher](https://github.com/Pathoschild/StardewMods/tree/develop/ContentPatcher).
+Game State Queries | Adds new [game state queries](https://stardewvalleywiki.com/Modding:Game_state_queries) (GSQs) to Stardew's "condition" fields.
+Trigger Actions | Adds new [trigger actions](https://stardewvalleywiki.com/Modding:Trigger_actions) and triggers to `Data/TriggerActions` and related fields.
 
 ## Translation
 EMP supports translation of its Generic Mod Config Menu (GMCM) setting names and descriptions.
