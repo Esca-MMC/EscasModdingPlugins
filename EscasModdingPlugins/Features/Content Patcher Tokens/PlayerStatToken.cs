@@ -44,6 +44,8 @@ namespace EscasModdingPlugins
         /// <returns>Returns whether the value changed, which may trigger patch updates.</returns>
         public bool UpdateContext()
         {
+            //TODO: consider caching inputs and their latest outputs, rather than the entire stat set, similar to how the GSQ token works
+
             InputOutputCache.Value = new Dictionary<string, uint>(Game1.player.stats.Values); //update the cache of the local player's stats
             return true; //assume values have changed
         }

@@ -82,6 +82,7 @@ namespace EscasModdingPlugins
 
                 //initialize EMP's custom tokens
                 api.RegisterToken(ModManifest, "GameStateQuery", new GameStateQueryToken());
+                api.RegisterToken(ModManifest, "ModData", new ModDataToken());
                 api.RegisterToken(ModManifest, "PlayerStat", new PlayerStatToken());
             }
             catch (Exception ex)
