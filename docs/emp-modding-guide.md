@@ -220,13 +220,18 @@ Token format: `{{Esca.EMP/ModData <Target> <Key>}}`
 
 `<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, at least if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
 
-`<Key>` can be any text. It's a unique ID for where the text is stored. Since mod data is shared by all mods, keys should start with a mod's unique ID, e.g. `Esca.TestMod_MyCustomText`.
+`<Key>` is the unique ID for a specific entry in the mod data. Since mod data is shared by all mods, keys should start with a mod's unique ID, e.g. `Esca.TestMod_MyCustomText`.
 
 Note: Currently, EMP cannot let content packs write mod data, only read it. C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`.
 
 The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions that can edit mod data. See the [BETAS documentation](https://stardew.button.gay/docs/betas) for more info.
 
 Format example:
+
+```cs
+//somewhere in a C# mod, do this:
+Game1.getFarm().modData["Esca.TestMod_MyCustomText"] = "Hi, world. Testing 1 2 3...";
+```
 
 ```js
 {
