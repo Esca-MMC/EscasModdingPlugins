@@ -14,6 +14,21 @@ namespace EscasModdingPlugins
         }
 
         /// <inheritdoc/>
+        public void GetFishLocationsData(GameLocation location, Vector2 tile, out string useLocationName, out Vector2? useTile, out List<string> useCrabPotTypes)
+        {
+            //get fishing data for this tile
+            var data = TileData.GetDataForTile<FishLocationsData>(HarmonyPatch_FishLocations.AssetName, HarmonyPatch_FishLocations.TilePropertyName, location, (int)tile.X, (int)tile.Y);
+
+            useLocationName = data?.UseLocation ?? null;
+            useTile = data?.UseTile?.AsVector2() ?? null;
+            useCrabPotTypes = data?.UseCrabPotTypes ?? null;
+        }
+
+        /*********************/
+        /* Obsolete features */
+        /*********************/
+
+        /// <inheritdoc/>
         [Obsolete("In EMP v1.2.3 and later, some of these parameters are disabled or implemented differently. Please use another overload of this method.", false)]
         public void GetFishLocationsData(GameLocation location, Vector2 tile, out string useLocationName, out int? useZone, out bool? useOceanCrabPots)
         {
@@ -24,17 +39,6 @@ namespace EscasModdingPlugins
             useLocationName = data?.UseLocation ?? null;
             useZone = null; //disabled
             useOceanCrabPots = data?.UseOceanCrabPots ?? null; //obsolete and overridden by a new field, but still functional in legacy mods
-        }
-
-        /// <inheritdoc/>
-        public void GetFishLocationsData(GameLocation location, Vector2 tile, out string useLocationName, out Vector2? useTile, out List<string> useCrabPotTypes)
-        {
-            //get fishing data for this tile
-            var data = TileData.GetDataForTile<FishLocationsData>(HarmonyPatch_FishLocations.AssetName, HarmonyPatch_FishLocations.TilePropertyName, location, (int)tile.X, (int)tile.Y);
-
-            useLocationName = data?.UseLocation ?? null;
-            useTile = data?.UseTile?.AsVector2() ?? null;
-            useCrabPotTypes = data?.UseCrabPotTypes ?? null;
         }
     }
 }
