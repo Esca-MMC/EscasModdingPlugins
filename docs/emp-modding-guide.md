@@ -19,6 +19,7 @@ See [the main readme](readme.md) for other information about EMP.
 * [Content Patcher Tokens](#content-patcher-tokens)
   * [Game State Query](#game-state-query)
   * [Mod Data](#mod-data)
+  * [Mod Data Keys](#mod-data-keys)
   * [Player Stats](#player-stats)
 * [Game State Queries](#game-state-queries)
   * [Can Player Move](#can-player-move)
@@ -216,7 +217,7 @@ Format example:
 ### Mod Data
 The `Esca.EMP/ModData` token can be used to read text from the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. This token outputs whatever text is stored in the target's modData with the given key; if no data exists, it'll be blank.
 
-Token format: `{{Esca.EMP/ModData <Target> <Key>}}`
+Token format: `{{Esca.EMP/ModData: <Target> <Key>}}`
 
 `<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, at least if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
 
@@ -230,7 +231,7 @@ Format example:
 
 ```cs
 //somewhere in a C# mod, do this:
-Game1.getFarm().modData["Esca.TestMod_MyCustomText"] = "Hi, world. Testing 1 2 3...";
+Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world. Testing 1 2 3...";
 ```
 
 ```js
@@ -238,14 +239,15 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomText"] = "Hi, world. Testing 1 2 3
   "Format": "2.4.0",
   "Changes": [
     {
-      "LogName": "Show a console message with custom text from a mod data field",
+      "LogName": "Repeatedly show a console message with custom text from a mod data field, if it exists",
       "Action": "EditData",
       "Target": "Data/TriggerActions",
       "Entries": {
         "{{ModId}}_LogModData": {
             "Id": "{{ModId}}_LogModData",
-            "Trigger": "DayStarted",
-            "Action": "Esca.EMP_LogMessage Info {{ModId}}: Reading shared mod data from the farm. Stored text: {{Esca.EMP/ModData Farm Esca.TestMod_MyCustomText}}"
+            "Trigger": "LocationChanged",
+            "Action": "Esca.EMP_LogMessage Info {{ModId}}: Found shared mod data from the farm. Stored text: {{Esca.EMP/ModData: Farm Esca.TestMod_MyCustomData}}",
+            "MarkActionApplied": false
         }
       }
     }
@@ -254,6 +256,42 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomText"] = "Hi, world. Testing 1 2 3
 ```
 
 Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: Reading the farm's mod data. Stored text: Hi, world. Testing 1 2 3...`
+
+### Mod Data Keys
+The `Esca.EMP/ModDataKeys` token outputs existing keys in the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. It can be used to check whether specific keys exist.
+
+Token format: `{{Esca.EMP/ModDataKeys: <Target>}}`
+
+`<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, at least if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
+
+Note: Currently, EMP cannot let content packs write mod data, only read it. C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`.
+
+The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions that can edit mod data. See the [BETAS documentation](https://stardew.button.gay/docs/betas) for more info.
+
+Format example:
+
+```cs
+//somewhere in a C# mod, do this:
+Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "random text here!";
+```
+
+```js
+{
+  "Format": "2.4.0",
+  "Changes": [
+    {
+      "LogName": "Edit object sprites when a mod data key exists",
+      "Action": "EditImage",
+      "Target": "Maps/springobjects",
+      "FromFile": "assets/My_Edited_SpringObjects.png",
+      "When": {
+        "Esca.EMP/ModDataKeys: Farm": "Esca.TestMod_MyCustomData"
+      },
+      "Update": "OnTimeChange"
+    }
+  ]
+}
+```
 
 ### Player Stats
 The `Esca.EMP/PlayerStat` token can be used to check certain statistics about the local player. It returns the current number of whichever stat you input.
