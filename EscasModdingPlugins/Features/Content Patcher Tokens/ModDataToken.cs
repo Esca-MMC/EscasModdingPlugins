@@ -81,16 +81,23 @@ namespace EscasModdingPlugins
 
                 //get the target instance to check its mod data
                 IHaveModData targetInstance = null;
-                if (IsReady()) //if this token is actually ready for use
+                if (modDataTarget == "farm")
                 {
-                    if (modDataTarget == "farm")
+                    if (Context.IsWorldReady)
                         targetInstance = Game1.getFarm();
-                    else if (modDataTarget == "player")
+                    else
+                        targetInstance = SaveGame.loaded?.locations?.FirstOrDefault((loc) => (loc?.Name == "Farm")); //try to get the farm while the game is still loading (null if not found)
+                }
+                else if (modDataTarget == "player")
+                {
+                    if (Context.IsWorldReady)
                         targetInstance = Game1.player;
+                    else
+                        targetInstance = SaveGame.loaded?.player;
                 }
 
                 string newValue = null;
-                targetInstance?.modData.TryGetValue(modDataKey, out newValue); //get the new output value from the target (or null if unavailable)
+                targetInstance?.modData?.TryGetValue(modDataKey, out newValue); //get the new output value from the target (or null if unavailable)
 
                 if (InputOutputCache.Value[cachedInput] != newValue) //if the cached value doesn't match the new value
                 {
@@ -105,7 +112,20 @@ namespace EscasModdingPlugins
         /// <summary>Get whether the token is available for use.</summary>
         public bool IsReady()
         {
-            return Context.IsWorldReady;
+            if (Context.IsWorldReady)
+                return true;
+
+            //if the world isn't ready yet, but all modData targets are available, return true
+            if (SaveGame.loaded?.player?.modData != null && SaveGame.loaded?.locations != null) //if the player and locations exist
+            {
+                foreach (GameLocation location in SaveGame.loaded.locations)
+                {
+                    if (location?.Name == "Farm" && location.modData != null) //if the farm and its modData exist
+                        return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>Get the current values.</summary>
