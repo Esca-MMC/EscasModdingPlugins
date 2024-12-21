@@ -79,15 +79,18 @@ namespace EscasModdingPlugins
             {
                 TryParseInput(cachedInput, out string modDataTarget, out string modDataKey, out _); //parse cached input into arguments; ignore errors, because it's been validated before
 
+                //get the target instance to check its mod data
+                IHaveModData targetInstance = null;
+                if (IsReady()) //if this token is actually ready for use
+                {
+                    if (modDataTarget == "farm")
+                        targetInstance = Game1.getFarm();
+                    else if (modDataTarget == "player")
+                        targetInstance = Game1.player;
+                }
+
                 string newValue = null;
-                if (modDataTarget == "farm")
-                {
-                    Game1.getFarm()?.modData.TryGetValue(modDataKey, out newValue); //get modData from the Farm location
-                }
-                else if (modDataTarget == "player")
-                {
-                    Game1.player?.modData.TryGetValue(modDataKey, out newValue); //get modData from the current player
-                }
+                targetInstance?.modData.TryGetValue(modDataKey, out newValue); //get the new output value from the target (or null if unavailable)
 
                 if (InputOutputCache.Value[cachedInput] != newValue) //if the cached value doesn't match the new value
                 {

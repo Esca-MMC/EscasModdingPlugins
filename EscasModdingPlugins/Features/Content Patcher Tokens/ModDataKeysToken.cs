@@ -76,17 +76,20 @@ namespace EscasModdingPlugins
         public bool UpdateContext()
         {
             bool anyResultsChanged = false;
-
+            
             foreach (var cachedInput in InputOutputCache.Value.Keys.ToList()) //for each key in the cache
             {
                 TryParseInput(cachedInput, out string modDataTarget, out _); //parse cached input into arguments; ignore errors, because it's been validated before
 
                 //get the target instance to check its mod data
-                IHaveModData targetInstance;
-                if (modDataTarget == "farm")
-                    targetInstance = Game1.getFarm();
-                else //if (modDataTarget == "player")
-                    targetInstance = Game1.player;
+                IHaveModData targetInstance = null;
+                if (IsReady()) //if this token is actually ready for use
+                {
+                    if (modDataTarget == "farm")
+                        targetInstance = Game1.getFarm();
+                    else //if (modDataTarget == "player")
+                        targetInstance = Game1.player;
+                }
 
                 HashSet<string> newValue = targetInstance?.modData.Keys.ToHashSet() ?? null; //get the new output value for this input (the target's modData keys) or null if unavailable
                 HashSet<string> oldValue = InputOutputCache.Value[cachedInput];
@@ -122,13 +125,13 @@ namespace EscasModdingPlugins
             }
             else
             {
-                if (InputOutputCache.Value.TryGetValue(input, out HashSet<string> modDataKeys))
+                if (InputOutputCache.Value.TryGetValue(input, out HashSet<string> modDataKeys) && modDataKeys != null) //if a non-null value exists for this input
                 {
                     foreach (string key in modDataKeys.OrderBy((key) => key, StringComparer.Ordinal)) //for each modData key in alphabetical order
                         yield return key;
                 }
                 else
-                    yield return ""; //return nothing if the input hasn't been cached for some reason
+                    yield break; //return nothing if the input hasn't been cached for some reason
             }
         }
 
