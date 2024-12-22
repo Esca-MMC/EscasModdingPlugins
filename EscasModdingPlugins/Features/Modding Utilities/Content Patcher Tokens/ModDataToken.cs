@@ -1,22 +1,20 @@
-﻿using Microsoft.Xna.Framework.Input;
-using StardewModdingAPI;
+﻿using StardewModdingAPI;
 using StardewModdingAPI.Utilities;
 using StardewValley;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace EscasModdingPlugins
 {
-    /// <summary>A Content Patcher token that checks which keys exist in a target's modData.</summary>
-    public class ModDataKeysToken
+    /// <summary>A Content Patcher token that reads text from a target's modData.</summary>
+    public class ModDataToken
     {
         /******************/
         /* Private fields */
         /******************/
 
         /// <summary>A set of token inputs and outputs for the most recent context update.</summary>
-        private PerScreen<Dictionary<string, HashSet<string>>> InputOutputCache { get; set; } = new(() => new());
+        private PerScreen<Dictionary<string, string>> InputOutputCache { get; set; } = new PerScreen<Dictionary<string, string>>(() => new Dictionary<string, string>());
 
         /******************/
         /* Public methods */
@@ -38,7 +36,7 @@ namespace EscasModdingPlugins
         /// <param name="input">The input arguments, if applicable.</param>
         public bool CanHaveMultipleValues(string input = null)
         {
-            return true;
+            return false;
         }
 
         /// <summary>Validate that the provided input arguments are valid.</summary>
@@ -50,7 +48,7 @@ namespace EscasModdingPlugins
         {
             if (string.IsNullOrWhiteSpace(input))
             {
-                error = "ModDataKeys input was null or blank.";
+                error = "ModData input was null or blank.";
                 return false;
             }
 
@@ -60,12 +58,12 @@ namespace EscasModdingPlugins
                 return true;
             }
 
-            if (!TryParseInput(input, out string _, out error)) //if this input is invalid
+            if (!TryParseInput(input, out _, out _, out error)) //if this input is invalid
             {
                 return false;
             }
 
-            InputOutputCache.Value.Add(input, null); //add the parsed input to the cache (its value will be updated elsewhere)
+            InputOutputCache.Value.Add(input, null); //add this input to the cache (its value will be updated elsewhere)
 
             error = null;
             return true;
@@ -76,10 +74,10 @@ namespace EscasModdingPlugins
         public bool UpdateContext()
         {
             bool anyResultsChanged = false;
-            
+
             foreach (var cachedInput in InputOutputCache.Value.Keys.ToList()) //for each key in the cache
             {
-                TryParseInput(cachedInput, out string modDataTarget, out _); //parse cached input into arguments; ignore errors, because it's been validated before
+                TryParseInput(cachedInput, out string modDataTarget, out string modDataKey, out _); //parse cached input into arguments; ignore errors, because it's been validated before
 
                 //get the target instance to check its mod data
                 IHaveModData targetInstance = null;
@@ -88,7 +86,7 @@ namespace EscasModdingPlugins
                     if (Context.IsWorldReady)
                         targetInstance = Game1.getFarm();
                     else
-                        targetInstance = SaveGame.loaded?.locations?.FirstOrDefault((loc) => (loc?.Name == "Farm")); //try to get the farm while the game is still loading (null if not found)
+                        targetInstance = SaveGame.loaded?.locations?.FirstOrDefault((loc) => loc?.Name == "Farm"); //try to get the farm while the game is still loading (null if not found)
                 }
                 else if (modDataTarget == "player")
                 {
@@ -98,15 +96,10 @@ namespace EscasModdingPlugins
                         targetInstance = SaveGame.loaded?.player;
                 }
 
-                HashSet<string> newValue = targetInstance?.modData?.Keys.ToHashSet() ?? null; //get the new output value for this input (the target's modData keys) or null if unavailable
-                HashSet<string> oldValue = InputOutputCache.Value[cachedInput];
+                string newValue = null;
+                targetInstance?.modData?.TryGetValue(modDataKey, out newValue); //get the new output value from the target (or null if unavailable)
 
-                if (newValue != null && oldValue != null && !newValue.SetEquals(oldValue)) //if both values exist, but their contents do NOT match
-                {
-                    anyResultsChanged = true;
-                    InputOutputCache.Value[cachedInput] = newValue; //update the cache
-                }
-                else if (newValue != oldValue) //if only one of the values is null
+                if (InputOutputCache.Value[cachedInput] != newValue) //if the cached value doesn't match the new value
                 {
                     anyResultsChanged = true;
                     InputOutputCache.Value[cachedInput] = newValue; //update the cache
@@ -141,17 +134,14 @@ namespace EscasModdingPlugins
         {
             if (string.IsNullOrEmpty(input))
             {
-                yield break; //return nothing if the input is invalid
+                yield return ""; //return blank if null
             }
             else
             {
-                if (InputOutputCache.Value.TryGetValue(input, out HashSet<string> modDataKeys) && modDataKeys != null) //if a non-null value exists for this input
-                {
-                    foreach (string key in modDataKeys.OrderBy((key) => key, StringComparer.Ordinal)) //for each modData key in alphabetical order
-                        yield return key;
-                }
+                if (InputOutputCache.Value.TryGetValue(input, out string modDataValue))
+                    yield return modDataValue ?? ""; //return the data, or blank if it's null
                 else
-                    yield break; //return nothing if the input hasn't been cached for some reason
+                    yield return ""; //return blank if the input hasn't been cached for some reason
             }
         }
 
@@ -161,23 +151,30 @@ namespace EscasModdingPlugins
 
         /// <summary>Tries to validate and parse this token's input.</summary>
         /// <param name="input">The token's input arguments as a space-separated string.</param>
-        /// <param name="target">The target instance to check for modData keys. Null if parsing failed.</param>
+        /// <param name="target">The target instance from which to read modData. Null if parsing failed.</param>
+        /// <param name="key">The modData key to read. Null if parsing failed.</param>
         /// <param name="error">An error message about invalid input. Null if parsing succeeded.</param>
         /// <returns>True if parsing succeeded.</returns>
-        private bool TryParseInput(string input, out string target, out string error)
+        private bool TryParseInput(string input, out string target, out string key, out string error)
         {
             target = null;
+            key = null;
             error = null;
 
-            string cleanInput = input?.Trim();
+            //try to parse args from input
+            string[] splitInput = ArgUtility.SplitBySpace(input, 2);
+            if (!ArgUtility.TryGet(splitInput, 0, out target, out error, false, "Target") || !ArgUtility.TryGet(splitInput, 1, out key, out error, false, "Key"))
+            {
+                return false;
+            }
 
             //validate "target" arg
-            if (string.Equals(cleanInput, "farm", System.StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(target, "farm", System.StringComparison.OrdinalIgnoreCase))
             {
                 target = "farm"; //output in expected format, e.g. lower case
                 return true;
             }
-            else if (string.Equals(cleanInput, "player", System.StringComparison.OrdinalIgnoreCase))
+            else if (string.Equals(target, "player", System.StringComparison.OrdinalIgnoreCase))
             {
                 target = "player";
                 return true;
