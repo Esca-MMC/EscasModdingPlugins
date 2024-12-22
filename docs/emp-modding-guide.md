@@ -215,23 +215,21 @@ Format example:
 ```
 
 ### Mod Data
-The `Esca.EMP/ModData` token can be used to read text from the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. This token outputs whatever text is stored in the target's modData with the given key; if no data exists, it'll be blank.
+The `Esca.EMP/ModData` token can be used to read text from the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. This token outputs whatever text is stored in the target's modData with the given key; if no data exists, the text is blank.
 
 Token format: `{{Esca.EMP/ModData: <Target> <Key>}}`
 
-`<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, at least if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
+`<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
 
 `<Key>` is the unique ID for a specific entry in the mod data. Since mod data is shared by all mods, keys should start with a mod's unique ID, e.g. `Esca.TestMod_MyCustomText`.
 
-Note: Currently, EMP cannot let content packs write mod data, only read it. C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`.
-
-The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions that can edit mod data. See the [BETAS documentation](https://stardew.button.gay/docs/betas) for more info.
+C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`. The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions to edit mod data.
 
 Format example:
 
 ```cs
 //somewhere in a C# mod, do this:
-Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world. Testing 1 2 3...";
+Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world...";
 ```
 
 ```js
@@ -239,14 +237,14 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world. Testing 1 2 3
   "Format": "2.4.0",
   "Changes": [
     {
-      "LogName": "Repeatedly show a console message with custom text from a mod data field, if it exists",
+      "LogName": "Repeatedly show a console message with text from mod data",
       "Action": "EditData",
       "Target": "Data/TriggerActions",
       "Entries": {
         "{{ModId}}_LogModData": {
             "Id": "{{ModId}}_LogModData",
             "Trigger": "LocationChanged",
-            "Action": "Esca.EMP_LogMessage Info {{ModId}}: Found shared mod data from the farm. Stored text: {{Esca.EMP/ModData: Farm Esca.TestMod_MyCustomData}}",
+            "Action": "Esca.EMP_LogMessage Info {{ModId}}: Reading shared mod data from the farm. Text: {{Esca.EMP/ModData: Farm Esca.TestMod_MyCustomData}}",
             "MarkActionApplied": false
         }
       }
@@ -255,18 +253,16 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world. Testing 1 2 3
 }
 ```
 
-Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: Reading the farm's mod data. Stored text: Hi, world. Testing 1 2 3...`
+Log output: `[00:00:00 INFO  Esca's Modding Plugins] Esca.TestMod: Reading shared mod data from the farm. Text: Hi, world...`
 
 ### Mod Data Keys
-The `Esca.EMP/ModDataKeys` token outputs existing keys in the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. It can be used to check whether specific keys exist.
+The `Esca.EMP/ModDataKeys` token outputs existing keys in the "mod data" field attached to certain in-game objects, where mods can store custom data that persists in the save file. This token can be used to check whether specific keys exist.
 
 Token format: `{{Esca.EMP/ModDataKeys: <Target>}}`
 
-`<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, at least if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
+`<Target>` should be either `Farm` or `Player`. "Farm" will use the Farm location's mod data; this is shared by everyone in multiplayer, if the same key is used. "Player" will read from the local player's data instead, so the same key will have different data for each player.
 
-Note: Currently, EMP cannot let content packs write mod data, only read it. C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`.
-
-The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions that can edit mod data. See the [BETAS documentation](https://stardew.button.gay/docs/betas) for more info.
+C# mods can read and edit the farm's data with `Game1.getFarm().modData`, or the current player's data with `Game1.player.modData`. The mod [BETAS](https://www.nexusmods.com/stardewvalley/mods/27100) also adds trigger actions to edit mod data.
 
 Format example:
 
