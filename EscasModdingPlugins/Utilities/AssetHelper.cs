@@ -18,13 +18,15 @@ namespace EscasModdingPlugins
         /**********/
 
         /// <summary>True if this class is initialized and ready to use.</summary>
-        private static bool Initialized { get; set; } = false;
+        private static bool Initialized = false;
         /// <summary>A set of asset names and constructors for their default instances.</summary>
         private static Dictionary<string, Func<object>> Defaults = new Dictionary<string, Func<object>>();
         /// <summary>A set of asset names and their most recently updated instances.</summary>
         private static Dictionary<string, object> Cache = new Dictionary<string, object>();
         /// <summary>This mod's SMAPI helper instance.</summary>
         private static IModHelper Helper = null;
+        /// <summary>A lock used to prevent multiple threads simultaneously loading data.</summary>
+        private static object LoadLock = new();
 
         /******************/
         /* Public methods */
@@ -59,8 +61,14 @@ namespace EscasModdingPlugins
                 return (T)asset; //return the cached asset as the given type
             else //if this asset does NOT have a cached version
             {
-                T loadedAsset = Helper.GameContent.Load<T>(assetName); //load the asset's most recent version
-                Cache[assetName] = loadedAsset; //cache it
+                T loadedAsset;
+
+                lock (LoadLock)
+                {
+                    loadedAsset = Helper.GameContent.Load<T>(assetName); //load the asset's most recent version
+                    Cache[assetName] = loadedAsset; //cache it
+                }
+
                 return loadedAsset; //return it
             }
         }
