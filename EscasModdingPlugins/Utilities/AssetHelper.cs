@@ -13,12 +13,22 @@ namespace EscasModdingPlugins
     /// </remarks>
     internal static class AssetHelper
     {
-        /// <summary>True if this class is initialized and ready to use.</summary>
-        internal static bool Initialized { get; set; } = false;
+        /**********/
+        /* Fields */
+        /**********/
 
+        /// <summary>True if this class is initialized and ready to use.</summary>
+        private static bool Initialized { get; set; } = false;
+        /// <summary>A set of asset names and constructors for their default instances.</summary>
         private static Dictionary<string, Func<object>> Defaults = new Dictionary<string, Func<object>>();
+        /// <summary>A set of asset names and their most recently updated instances.</summary>
         private static Dictionary<string, object> Cache = new Dictionary<string, object>();
+        /// <summary>This mod's SMAPI helper instance.</summary>
         private static IModHelper Helper = null;
+
+        /******************/
+        /* Public methods */
+        /******************/
 
         /// <summary>Performs required setup tasks for this class.</summary>
         /// <param name="helper">This mod's SMAPI helper instance.</param>
@@ -38,10 +48,6 @@ namespace EscasModdingPlugins
 
             Initialized = true;
         }
-
-        /*******************/
-        /* Utility methods */
-        /*******************/
 
         /// <summary>Get the most recent version of a game asset.</summary>
         /// <typeparam name="T">The asset's type.</typeparam>
@@ -122,10 +128,6 @@ namespace EscasModdingPlugins
         {
             Cache.Clear();
         }
-
-        /************************/
-        /* IAssetLoader methods */
-        /************************/
 
         /// <summary>Loads default instances of any new assets created by this mod.</summary>
         private static void AssetRequested_LoadDefaults(object sender, StardewModdingAPI.Events.AssetRequestedEventArgs e)
