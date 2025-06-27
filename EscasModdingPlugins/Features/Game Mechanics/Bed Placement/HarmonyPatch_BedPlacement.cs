@@ -2,6 +2,7 @@
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Objects;
+using StardewValley.GameData.Furniture;
 using System;
 
 namespace EscasModdingPlugins
@@ -86,7 +87,7 @@ namespace EscasModdingPlugins
         {
             try
             {
-                if (furniture.furniture_type.Value == 15 || furniture is BedFurniture) //if the furniture is a bed
+                if (furniture.furniture_type.Value == FurnitureType.Bed || furniture is BedFurniture) //if the furniture is a bed
                 {
                     if (ShouldBedsBePlaceableHere(__instance)) //if this mod should allow bed placement at this tile
                         __result = true; //allow it
