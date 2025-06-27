@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using StardewModdingAPI;
 using StardewValley;
-using StardewValley.Objects;
 using StardewValley.GameData.Furniture;
+using StardewValley.Objects;
 using System;
 
 namespace EscasModdingPlugins
