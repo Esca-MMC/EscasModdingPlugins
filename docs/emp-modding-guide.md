@@ -483,7 +483,7 @@ Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: Player just 
 
 ### Save Loaded
 
-The `Esca.EMP_SaveLoaded` trigger happens when the player creates a new game or loads a save. Note that this does not happen when a save is first created or loaded (i.e. it won't trigger at 6:00 AM on the first day of a gameplay session).
+The `Esca.EMP_SaveLoaded` trigger happens when the player creates a new game or loads a saved game.
 
 Below is an example of a trigger action that logs the local player's name whenever a save is loaded.
 
