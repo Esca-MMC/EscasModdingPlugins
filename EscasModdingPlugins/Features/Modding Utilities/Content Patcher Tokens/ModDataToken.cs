@@ -99,10 +99,10 @@ namespace EscasModdingPlugins
                 string newValue = null;
                 targetInstance?.modData?.TryGetValue(modDataKey, out newValue); //get the new output value from the target (or null if unavailable)
 
-                if (InputOutputCache.Value[cachedInput] != newValue) //if the cached value doesn't match the new value
+                if (InputOutputCache.Value[cachedInput] != newValue)
                 {
                     anyResultsChanged = true;
-                    InputOutputCache.Value[cachedInput] = newValue; //update the cache
+                    InputOutputCache.Value[cachedInput] = newValue;
                 }
             }
 

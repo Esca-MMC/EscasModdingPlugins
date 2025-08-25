@@ -103,12 +103,12 @@ namespace EscasModdingPlugins
                 if (newValue != null && oldValue != null && !newValue.SetEquals(oldValue)) //if both values exist, but their contents do NOT match
                 {
                     anyResultsChanged = true;
-                    InputOutputCache.Value[cachedInput] = newValue; //update the cache
+                    InputOutputCache.Value[cachedInput] = newValue;
                 }
                 else if (newValue != oldValue) //if only one of the values is null
                 {
                     anyResultsChanged = true;
-                    InputOutputCache.Value[cachedInput] = newValue; //update the cache
+                    InputOutputCache.Value[cachedInput] = newValue;
                 }
             }
 

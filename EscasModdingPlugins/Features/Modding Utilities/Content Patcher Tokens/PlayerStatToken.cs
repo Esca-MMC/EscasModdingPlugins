@@ -1,7 +1,9 @@
 ﻿using StardewModdingAPI;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EscasModdingPlugins
 {
@@ -12,8 +14,7 @@ namespace EscasModdingPlugins
         /* Private fields */
 
         /// <summary>A set of token inputs and outputs for the most recent context update.</summary>
-        /// <remarks>Unlike other player stat tokens, this uses PerScreen caches. The output depends on the current local player, which varies in split-screen mode.</remarks>
-        private PerScreen<Dictionary<string, uint>> InputOutputCache { get; set; } = new PerScreen<Dictionary<string, uint>>(() => new Dictionary<string, uint>());
+        private PerScreen<Dictionary<string, uint>> InputOutputCache { get; set; } = new PerScreen<Dictionary<string, uint>>(() => new Dictionary<string, uint>(StringComparer.OrdinalIgnoreCase));
 
         /* Public methods */
 
@@ -44,10 +45,19 @@ namespace EscasModdingPlugins
         /// <returns>Returns whether the value changed, which may trigger patch updates.</returns>
         public bool UpdateContext()
         {
-            //TODO: consider caching inputs and their latest outputs, rather than the entire stat set, similar to how the GSQ token works
+            bool anyResultsChanged = false;
 
-            InputOutputCache.Value = new Dictionary<string, uint>(Game1.player.stats.Values); //update the cache of the local player's stats
-            return true; //assume values have changed
+            foreach (string key in InputOutputCache.Value.Keys.ToList()) //loop through a separate list to allow value changes
+            {
+                uint newValue = Game1.player.stats.Get(key);
+                if (InputOutputCache.Value[key] != newValue)
+                {
+                    anyResultsChanged = true;
+                    InputOutputCache.Value[key] = newValue;
+                }
+            }
+
+            return anyResultsChanged;
         }
 
         /// <summary>Get whether the token is available for use.</summary>
@@ -62,14 +72,14 @@ namespace EscasModdingPlugins
         {
             if (string.IsNullOrEmpty(input))
                 yield return "0";
-            else if (InputOutputCache.Value.TryGetValue(input, out uint statValue)) //if the input stat has a cached value
+            else
             {
-                yield return statValue.ToString(); //output it as a string (e.g. "0")
+                if (InputOutputCache.Value.ContainsKey(input) == false)
+                    InputOutputCache.Value[input] = Game1.player.stats.Get(input); //note: the underlying stats dictionary should be case-insensitive
+
+                yield return InputOutputCache.Value[input].ToString();
             }
-            else //if the input stat does NOT have a cached value
-            {
-                yield return "0";
-            }
+            
         }
     }
 }
