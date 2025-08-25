@@ -2,12 +2,12 @@
   <PropertyGroup>
     <AssemblyName>EMP</AssemblyName>
     <RootNamespace>EMP</RootNamespace>
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <TargetFramework>net6.0</TargetFramework>
 	  <EnableHarmony>true</EnableHarmony>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.3.2" />
+    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
   </ItemGroup>
 </Project>
