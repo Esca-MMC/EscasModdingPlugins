@@ -79,7 +79,7 @@ namespace EscasModdingPlugins
 
                 yield return InputOutputCache.Value[input].ToString();
             }
-            
+
         }
     }
 }
