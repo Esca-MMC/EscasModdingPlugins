@@ -25,6 +25,7 @@ See [the main readme](readme.md) for other information about EMP.
   * [Can Player Move](#can-player-move)
   * [Is Player Free](#is-player-free)
   * [Is Split Screen](#is-split-screen)
+  * [Is Time Passing](#is-time-passing)
   * [Is World Ready](#is-world-ready)
 * [Trigger Actions](#trigger-actions)
   * [Log Message](#log-message)
@@ -340,6 +341,13 @@ The `Esca.EMP_IS_SPLIT_SCREEN` GSQ is true when the local player is connected to
 Note that the Stardew already includes the `IS_MULTIPLAYER` GSQ, which is true when connected to any multiplayer session.
 
 Based on SMAPI's [Context.IsSplitScreen](https://www.stardewvalleywiki.com/Modding:Modder_Guide/APIs/Utilities#Context) value.
+
+### Is Time Passing
+The `Esca.EMP_IS_TIME_PASSING` GSQ is true when the in-game clock time is passing, and false when time is paused for any known reason.
+
+Time generally pauses while on the main menu, attending "active" festivals, sleeping, etc. During single player sessions, the game pauses more often, e.g. while in events (cutscenes), talking to NPCs, opening menus, or deselecting/minimizing the game window.
+
+This query should NOT be treated as 100% accurate. It might fail to detect some pause reasons, e.g. time-altering mods or differences between operating systems.
 
 ### Is World Ready
 The `Esca.EMP_IS_WORLD_READY` GSQ is true when the local player has finished loading a save (or loading into a multiplayer session) and the in-game world is fully initialized.
