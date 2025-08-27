@@ -95,7 +95,8 @@ namespace EscasModdingPlugins
         /// <summary>Initializes custom Game State Queries (a.k.a. GSQs or queries) and related features.</summary>
         private void GameLoop_GameLaunched_InitializeGameStateQueries(object sender, StardewModdingAPI.Events.GameLaunchedEventArgs e)
         {
-            GSQ_SMAPI_Contexts.Enable(Helper);
+            GSQ_IsTimePassing.Enable(Helper);
+            GSQ_SMAPIContexts.Enable(Helper);
         }
 
         /// <summary>Initializes custom trigger actions and related features.</summary>

@@ -14,7 +14,7 @@ namespace EscasModdingPlugins
     /// Esca.EMP_IS_SPLIT_SCREEN<br />
     /// Esca.EMP_IS_WORLD_READY
     /// </remarks>
-    public class GSQ_SMAPI_Contexts
+    public class GSQ_SMAPIContexts
     {
         /// <summary>True if this class's behavior is currently enabled.</summary>
 		public static bool Enabled { get; private set; } = false;
