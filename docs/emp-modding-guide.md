@@ -115,7 +115,7 @@ The asset can be edited with Content Patcher's "EditData" action like any other 
 Below is an example content.json file for a Content Patcher mod. This example changes some areas of the Farm to catch fish from the Forest's pond, and crab pots there will catch "freshwater" results.
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -199,7 +199,7 @@ Format example:
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "LogName": "Edit object sprites while the Night Market is open",
@@ -235,7 +235,7 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "Hi, world...";
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "LogName": "Repeatedly show a console message with text from mod data",
@@ -274,7 +274,7 @@ Game1.getFarm().modData["Esca.TestMod_MyCustomData"] = "random text here!";
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "LogName": "Edit object sprites when a mod data key exists",
@@ -301,7 +301,7 @@ Format example:
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "LogName": "Make Parsnip Seeds display the player's total footstep count in their description",
@@ -373,7 +373,7 @@ Below is an example of a trigger action that gives the local player 10g, then di
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -409,7 +409,7 @@ Below is an example of a trigger action that displays a compatibility message af
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -439,7 +439,7 @@ Below is an example of a trigger action that gives the player 10g every second, 
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -469,7 +469,7 @@ Below is an example of a trigger action that logs a message whenever the player 
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -497,7 +497,7 @@ Below is an example of a trigger action that logs the local player's name whenev
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
@@ -527,7 +527,7 @@ Below is an example of a trigger action that displays a message whenever the in-
 
 ```js
 {
-  "Format": "2.4.0",
+  "Format": "2.7.0",
   "Changes": [
     {
       "Action": "EditData",
