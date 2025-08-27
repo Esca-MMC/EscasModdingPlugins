@@ -30,7 +30,7 @@ namespace EscasModdingPlugins
 
         private static bool IsTimePassing()
         {
-            if (!Game1.shouldTimePass(false)) //check common pause reasons like festivals, events, chat commands, etc
+            if (Game1.HostPaused || Game1.NetTimePaused || !Game1.shouldTimePass(false)) //check common pause reasons like festivals, events, chat commands, etc
                 return false;
 
             //check whether the game is paused because it's not the active window in single-player mode
