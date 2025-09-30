@@ -102,19 +102,19 @@ namespace EscasModdingPlugins
         {
             bool anyResultsChanged = false;
 
-            foreach (var query in QueryResultsCache.Value.Keys)
+            foreach (var entry in QueryResultsCache.Value)
             {
                 if (anyResultsChanged)
-                    QueryResultsCache.Value[query].Dirty = true;
+                    entry.Value.Dirty = true;
                 else
                 {
-                    bool newResult = GameStateQuery.CheckConditions(query);
-                    if (QueryResultsCache.Value[query].Result != newResult)
+                    bool newResult = GameStateQuery.CheckConditions(entry.Key);
+                    if (entry.Value.Result != newResult)
                     {
                         anyResultsChanged = true;
-                        QueryResultsCache.Value[query].Result = newResult;
+                        entry.Value.Result = newResult;
                     }
-                    QueryResultsCache.Value[query].Dirty = false;
+                    entry.Value.Dirty = false;
                 }
             }
 
@@ -135,12 +135,12 @@ namespace EscasModdingPlugins
                 yield return "False";
             else
             {
-                if (!QueryResultsCache.Value.ContainsKey(input) || QueryResultsCache.Value[input].Dirty)
+                if (!QueryResultsCache.Value.TryGetValue(input, out var prev) || prev.Dirty)
                 {
                     bool newResult = GameStateQuery.CheckConditions(input);
-                    QueryResultsCache.Value[input] = new(false, newResult);
+                    prev = QueryResultsCache.Value[input] = new(false, newResult); //cache new result, update "prev" for use below
                 }
-                yield return QueryResultsCache.Value[input].Result.ToString(); //return the query result as "True" or "False"
+                yield return prev.Result.ToString(); //return the query result as "True" or "False"
             }
         }
     }
