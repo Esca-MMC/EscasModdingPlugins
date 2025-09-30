@@ -47,7 +47,7 @@ namespace EscasModdingPlugins
         {
             bool anyResultsChanged = false;
 
-            foreach (string key in InputOutputCache.Value.Keys.ToList()) //loop through a separate list to allow value changes
+            foreach (string key in InputOutputCache.Value.Keys)
             {
                 uint newValue = Game1.player.stats.Get(key);
                 if (InputOutputCache.Value[key] != newValue)

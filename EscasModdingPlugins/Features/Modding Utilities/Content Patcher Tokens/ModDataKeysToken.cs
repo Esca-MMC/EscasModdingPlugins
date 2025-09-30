@@ -76,7 +76,7 @@ namespace EscasModdingPlugins
         {
             bool anyResultsChanged = false;
 
-            foreach (var cachedInput in InputOutputCache.Value.Keys.ToList()) //for each key in the cache
+            foreach (var cachedInput in InputOutputCache.Value.Keys)
             {
                 TryParseInput(cachedInput, out string modDataTarget, out _); //parse cached input into arguments; ignore errors, because it's been validated before
 

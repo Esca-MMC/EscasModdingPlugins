@@ -87,7 +87,7 @@ namespace EscasModdingPlugins
         {
             bool anyResultsChanged = false;
 
-            foreach (var query in QueryResultsCache.Value.Keys.ToList())  //loop through a separate list to allow value changes
+            foreach (var query in QueryResultsCache.Value.Keys)
             {
                 bool newResult = GameStateQuery.CheckConditions(query);
                 if (QueryResultsCache.Value[query] != newResult)
