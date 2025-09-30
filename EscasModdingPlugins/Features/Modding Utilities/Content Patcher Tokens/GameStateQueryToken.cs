@@ -9,10 +9,26 @@ namespace EscasModdingPlugins
     /// <summary>A Content Patcher token that accepts a game state query and outputs the result.</summary>
     public class GameStateQueryToken
     {
+        /* Subclasses */
+
+        /// <summary>The value type used in <see cref="QueryResultsCache"/>.</summary>
+        private class CacheData
+        {
+            public CacheData(bool dirty, bool result)
+            {
+                Dirty = dirty;
+                Result = result;
+            }
+            /// <summary>If true, the result has not been updated for the current context, and should be re-checked before use.</summary>
+            public bool Dirty { get; set; }
+            /// <summary>The most recent result of a game state query (GSQ) when checked.</summary>
+            public bool Result { get; set; }
+        }
+
         /* Private fields */
 
         /// <summary>A set of game state queries and results. If a specific query has already been checked since the last context update, the result will be cached here as the value.</summary>
-        private PerScreen<Dictionary<string, bool>> QueryResultsCache { get; set; } = new PerScreen<Dictionary<string, bool>>(() => new Dictionary<string, bool>());
+        private PerScreen<Dictionary<string, CacheData>> QueryResultsCache { get; set; } = new(() => new Dictionary<string, CacheData>());
 
         /* Public methods */
 
@@ -89,11 +105,17 @@ namespace EscasModdingPlugins
 
             foreach (var query in QueryResultsCache.Value.Keys)
             {
-                bool newResult = GameStateQuery.CheckConditions(query);
-                if (QueryResultsCache.Value[query] != newResult)
+                if (anyResultsChanged)
+                    QueryResultsCache.Value[query].Dirty = true;
+                else
                 {
-                    anyResultsChanged = true;
-                    QueryResultsCache.Value[query] = newResult;
+                    bool newResult = GameStateQuery.CheckConditions(query);
+                    if (QueryResultsCache.Value[query].Result != newResult)
+                    {
+                        anyResultsChanged = true;
+                        QueryResultsCache.Value[query].Result = newResult;
+                    }
+                    QueryResultsCache.Value[query].Dirty = false;
                 }
             }
 
@@ -111,18 +133,15 @@ namespace EscasModdingPlugins
         public IEnumerable<string> GetValues(string input)
         {
             if (string.IsNullOrEmpty(input))
-            {
                 yield return "False";
-            }
             else
             {
-                if (QueryResultsCache.Value.ContainsKey(input) == false)
+                if (!QueryResultsCache.Value.ContainsKey(input) || QueryResultsCache.Value[input].Dirty)
                 {
                     bool newResult = GameStateQuery.CheckConditions(input);
-                    QueryResultsCache.Value[input] = newResult;
+                    QueryResultsCache.Value[input] = new(false, newResult);
                 }
-
-                yield return QueryResultsCache.Value[input].ToString(); //return the query result as "True" or "False"
+                yield return QueryResultsCache.Value[input].Result.ToString(); //return the query result as "True" or "False"
             }
         }
     }
