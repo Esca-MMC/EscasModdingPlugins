@@ -1,10 +1,7 @@
 ﻿using StardewModdingAPI;
-using StardewValley;
-using StardewValley.Locations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
 namespace EscasModdingPlugins
 {
@@ -83,7 +80,7 @@ namespace EscasModdingPlugins
                 }
                 else //if the subcommand is invalid
                     Monitor.Log(Helper.Translation.Get("Commands.EMP.UnrecognizedCommand", new { COMMAND = subCommand }), LogLevel.Info);
-                
+
             }
             else //format: "command sub-command arguments"
             {
