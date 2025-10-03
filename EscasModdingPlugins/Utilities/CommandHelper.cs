@@ -73,6 +73,7 @@ namespace EscasModdingPlugins
                 string subCommand = args[1];
                 if (SubCommands.ContainsKey(subCommand)) //if the sub-command is valid
                 {
+                    subCommand = SubCommands.Keys.FirstOrDefault(key => string.Equals(subCommand, key, StringComparison.OrdinalIgnoreCase)) ?? subCommand; //get the default capitalization of this sub-command
                     string output = $"EMP {subCommand}";
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
                         output += $"\n   {line}"; //add each doc line with indentation
