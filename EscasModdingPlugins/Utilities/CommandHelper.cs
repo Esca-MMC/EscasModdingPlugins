@@ -65,8 +65,8 @@ namespace EscasModdingPlugins
                     output += $"\n\nEMP {subCommand}";
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
                         output += $"\n   {line}"; //add each doc line with indentation
-                    Monitor.Log(output, LogLevel.Info);
                 }
+                Monitor.Log(output, LogLevel.Info);
             }
             else if (args.Length >= 2 && string.Equals(args[0], "help", StringComparison.OrdinalIgnoreCase)) //format: "command help sub-command"
             {

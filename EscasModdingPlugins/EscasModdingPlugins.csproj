@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <AssemblyName>EMP</AssemblyName>
-    <RootNamespace>EMP</RootNamespace>
-    <Version>1.6.2</Version>
-    <TargetFramework>net6.0</TargetFramework>
-	  <EnableHarmony>true</EnableHarmony>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
-  </ItemGroup>
+	<PropertyGroup>
+		<AssemblyName>EMP</AssemblyName>
+		<RootNamespace>EMP</RootNamespace>
+		<Version>1.6.2</Version>
+		<TargetFramework>net6.0</TargetFramework>
+		<LangVersion>Latest</LangVersion>
+		<EnableHarmony>true</EnableHarmony>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Pathoschild.Stardew.ModBuildConfig" Version="4.4.0" />
+	</ItemGroup>
 </Project>

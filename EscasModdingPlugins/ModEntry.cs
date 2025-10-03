@@ -50,7 +50,6 @@ namespace EscasModdingPlugins
             //custom order boards
             HarmonyPatch_CustomOrderBoards.ApplyPatch(harmony, Monitor);
             DisplayNewOrderExclamationPoint.Enable(helper, Monitor);
-            Command_CustomBoard.Enable(helper, Monitor);
 
             //destroyable bushes
             HarmonyPatch_DestroyableBushes.ApplyPatch(harmony, Monitor);
@@ -68,6 +67,10 @@ namespace EscasModdingPlugins
             /*******************************************/
             /* Initialize features - Modding utilities */
             /*******************************************/
+
+            //console commands
+            Command_CustomBoard.Initialize(helper, Monitor);
+            Command_ListGSQs.Initialize(helper, Monitor);
 
             //Content Patcher tokens
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeCPTokens;
