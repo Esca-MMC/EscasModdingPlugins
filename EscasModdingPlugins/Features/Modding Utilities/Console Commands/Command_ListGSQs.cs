@@ -17,7 +17,6 @@ namespace EscasModdingPlugins
         private static IModHelper Helper { get; set; } = null;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
-
         /// <summary>True if this class is initialized and ready to use.</summary>
         private static bool Initialized { get; set; } = false;
 
@@ -60,9 +59,15 @@ namespace EscasModdingPlugins
                 foreach (var query in queries)
                 {
                     output += $"\n{query}";
+
+                    List<string> aliases = new();
                     foreach (var entry in aliasDict)
                         if (entry.Value?.Equals(query, StringComparison.OrdinalIgnoreCase) == true) //if entry.Value matches this query, entry.Key is an alias of the query
-                            output += $"\n   {Helper.Translation.Get("Commands.EMP.ListGSQs.Alias", new { ALIAS = entry.Key })}"; //display the alias on a separate, indented line
+                            aliases.Add(entry.Key);
+                    aliases.Sort();
+
+                    if (aliases.Count > 0)
+                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display the "aliases" line with comma-separated aliases
                 }
 
                 Monitor.Log($"{Helper.Translation.Get("Commands.EMP.ListGSQs.StartList")}{output}", LogLevel.Info);

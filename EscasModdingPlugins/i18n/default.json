@@ -1,27 +1,27 @@
 ﻿{
 	/* Console command info */
 
+	"Commands.EMP.Aliases": "- Aliases: {{ALIASES}}",
 	"Commands.EMP.PlayerIsBusy": "Can't run this command because the player is busy. Please load a game, close any menus or text boxes, and otherwise make sure your character is free.",
 	"Commands.EMP.UnrecognizedCommand": "The command \"{{COMMAND}}\" is not recognized. For a list of commands, type \"EMP\" or \"EMP help\".",
 	"Commands.EMP.Description": "Runs one of EMP's console commands. Type \"EMP\" or \"EMP help\" for more information. You can also include a specific command's name, e.g. \"EMP help CustomBoard\".",
 	"Commands.EMP.AvailableCommands": "Available commands:",
 
-	/* Console command - EMP CustomBoard */
+	/* Console command - EMP OrderBoard */
 
-	"Commands.EMP.CustomBoard.OpeningBoard": "Opening special orders board. Order type: \"{{ORDERTYPE}}\".",
-	"Commands.EMP.CustomBoard.Description.1": "Opens a \"special orders board\" menu for a custom order type.",
-	"Commands.EMP.CustomBoard.Description.2": "",
-	"Commands.EMP.CustomBoard.Description.3": "Usage: EMP CustomBoard [OrderType]",
-	"Commands.EMP.CustomBoard.Description.4": "Example: EMP CustomBoard Esca.EMP/MyCustomOrders",
-	"Commands.EMP.CustomBoard.Description.5": "",
-	"Commands.EMP.CustomBoard.Description.6": "- OrderType: The category of special orders to display. Case-sensitive.",
-	"Commands.EMP.CustomBoard.Description.7": "   Optional. If no order type is included, the default order board will open.",
-	"Commands.EMP.CustomBoard.Description.8": "   See the \"OrderType\" field in the \"Data/SpecialOrders\" asset.",
+	"Commands.EMP.OrderBoard.OpeningBoard": "Opening special orders board. Order type: \"{{ORDERTYPE}}\".",
+	"Commands.EMP.OrderBoard.Description.1": "Opens a \"special orders board\" menu for a custom order type.",
+	"Commands.EMP.OrderBoard.Description.2": "",
+	"Commands.EMP.OrderBoard.Description.3": "Usage: EMP CustomBoard [OrderType]",
+	"Commands.EMP.OrderBoard.Description.4": "Example: EMP CustomBoard Esca.EMP/MyCustomOrders",
+	"Commands.EMP.OrderBoard.Description.5": "",
+	"Commands.EMP.OrderBoard.Description.6": "- OrderType: The category of special orders to display. Case-sensitive.",
+	"Commands.EMP.OrderBoard.Description.7": "   Optional. If no order type is included, the default order board will open.",
+	"Commands.EMP.OrderBoard.Description.8": "   See the \"OrderType\" field in the \"Data/SpecialOrders\" asset.",
 
 	/* Console command - EMP ListGSQs */
 
 	"Commands.EMP.ListGSQs.StartList": "Registered game state queries (GSQs) and their aliases:",
-	"Commands.EMP.ListGSQs.Alias": "- Alias: \"{{ALIAS}}\"",
 	"Commands.EMP.ListGSQs.Description.1": "Lists all registered game state queries (GSQs) and their aliases.",
 	"Commands.EMP.ListGSQs.Description.2": "",
 	"Commands.EMP.ListGSQs.Description.3": "Usage: EMP ListGSQs",

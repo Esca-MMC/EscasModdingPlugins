@@ -6,7 +6,7 @@ using System;
 namespace EscasModdingPlugins
 {
     /// <summary>Adds a SMAPI console command that opens a special orders board for a specified order type.</summary>
-    public static class Command_CustomBoard
+    public static class Command_OrderBoard
     {
         /**************/
         /* Properties */
@@ -16,7 +16,6 @@ namespace EscasModdingPlugins
         private static IModHelper Helper { get; set; } = null;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
-
         /// <summary>True if this class is initialized and ready to use.</summary>
         private static bool Initialized { get; set; } = false;
 
@@ -37,15 +36,15 @@ namespace EscasModdingPlugins
             Monitor = monitor;
 
             //initialize commands
-            CommandHelper.AddSubCommand("CustomBoard", CustomBoard);
+            CommandHelper.AddSubCommand("OrderBoard", OrderBoard);
 
             Initialized = true;
         }
 
-        /// <summary>Opens a special orders board for a custom order type.</summary>
+        /// <summary>Opens a special orders board for a specified order type.</summary>
         /// <param name="command">The console command used when calling this method.</param>
         /// <param name="args">The arguments provided after the console command, split around spaces.</param>
-        private static void CustomBoard(string command, string[] args)
+        private static void OrderBoard(string command, string[] args)
         {
             try
             {
@@ -56,7 +55,7 @@ namespace EscasModdingPlugins
                 }
 
                 string orderType = args?.Length > 0 ? args[0] : ""; //use the default order type ("") if none was provided 
-                Monitor.Log(Helper.Translation.Get("Commands.EMP.CustomBoard.OpeningBoard", new { ORDERTYPE = orderType }), LogLevel.Info);
+                Monitor.Log(Helper.Translation.Get("Commands.EMP.OrderBoard.OpeningBoard", new { ORDERTYPE = orderType }), LogLevel.Info);
                 Game1.activeClickableMenu = new SpecialOrdersBoard(orderType);
             }
             catch (Exception ex)

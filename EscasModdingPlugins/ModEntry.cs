@@ -69,7 +69,7 @@ namespace EscasModdingPlugins
             /*******************************************/
 
             //console commands
-            Command_CustomBoard.Initialize(helper, Monitor);
+            Command_OrderBoard.Initialize(helper, Monitor);
             Command_ListGSQs.Initialize(helper, Monitor);
 
             //Content Patcher tokens
