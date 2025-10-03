@@ -8,12 +8,23 @@ namespace EscasModdingPlugins
     /// <summary>Adds a SMAPI console command that opens a special orders board for a specified order type.</summary>
     public static class Command_CustomBoard
     {
-        /// <summary>True if these commands are currently enabled.</summary>
-		public static bool Enabled { get; private set; } = false;
+        /**************/
+        /* Properties */
+        /**************/
+
+        /// <summary>The helper instance to use for API access.</summary>
+        private static IModHelper Helper { get; set; } = null;
         /// <summary>The monitor instance to use for console/log messages.</summary>
         private static IMonitor Monitor { get; set; } = null;
 
-        /// <summary>Initializes this class's SMAPI console commands.</summary>
+        /// <summary>True if this class is enabled and ready to use.</summary>
+        private static bool Enabled { get; set; } = false;
+
+        /***********/
+        /* Methods */
+        /***********/
+
+        /// <summary>Enables this class's SMAPI console commands.</summary>
         /// <param name="helper">The helper instance to use for API access.</param>
         /// <param name="monitor">The monitor instance to use for console/log messages.</param>
         public static void Enable(IModHelper helper, IMonitor monitor)
@@ -22,10 +33,13 @@ namespace EscasModdingPlugins
                 return; //do nothing
 
             //store args
+            Helper = helper;
             Monitor = monitor;
 
             //initialize commands
-            helper.ConsoleCommands.Add("EMP", "Runs an EMP command. Type \"EMP\" or \"EMP help\" for details.", CustomBoard);
+            CommandHelper.AddSubCommand("CustomBoard", CustomBoard);
+
+            Enabled = true;
         }
 
         /// <summary>Opens a special orders board for a custom order type.</summary>
@@ -33,51 +47,15 @@ namespace EscasModdingPlugins
         /// <param name="args">The arguments provided after the console command (e.g. "CustomBoard" "MyCustomOrders").</param>
         private static void CustomBoard(string command, string[] args)
         {
-            if (args == null || args.Length == 0 || args[0].Equals("help", StringComparison.OrdinalIgnoreCase)) //args are null, blank, or "help"
+            if (!Context.IsPlayerFree)
             {
-                string helpText = @"""EMP"" can be used with these commands:
-
-EMP CustomBoard
-    Opens a ""special orders board"" menu for a custom order type.
-
-    Usage:   EMP CustomBoard <OrderType>
-    Example: EMP CustomBoard Esca.EMP/MyCustomOrders
-
-    - OrderType: The category of special orders to display. Case-sensitive.
-        ""Esca.EMP/"" will be added automatically if you don't include it.
-        See the ""OrderType"" field in the ""Data/SpecialOrders"" asset.
-";
-
-                Monitor.Log(helpText, LogLevel.Info);
+                Monitor.Log(Helper.Translation.Get("Commands.EMP.PlayerIsBusy"), LogLevel.Info);
                 return;
             }
 
-            if (args[0].Equals("CustomBoard", StringComparison.OrdinalIgnoreCase)) //if arg #1 is "CustomBoard"
-            {
-                if (!Context.IsPlayerFree)
-                {
-                    Monitor.Log($"Cannot currently open a menu. Please load a game, close other menus, or make sure your character is not busy.", LogLevel.Info);
-                    return;
-                }
-
-                if (args.Length > 1) //if arg #2 exists
-                {
-                    string orderType = args[1];
-
-                    if (!orderType.StartsWith(ModEntry.PropertyPrefix, StringComparison.OrdinalIgnoreCase)) //if the order type does NOT start with "Esca.EMP/"
-                        orderType = ModEntry.PropertyPrefix + orderType; //add that prefix
-
-                    Monitor.Log($"Opening special orders board menu for order type \"{orderType}\".", LogLevel.Info);
-                    Game1.activeClickableMenu = new SpecialOrdersBoard(orderType);
-                    return;
-                }
-                else
-                {
-                    Monitor.Log($"No order type provided. Opening the default special orders board menu.", LogLevel.Info);
-                    Game1.activeClickableMenu = new SpecialOrdersBoard();
-                    return;
-                }
-            }
+            string orderType = args?.Length > 0 ? args[0] : ""; //use the default order type ("") if none was provided 
+            Monitor.Log(Helper.Translation.Get("Commands.EMP.CustomBoard.OpeningBoard", new { ORDERTYPE = orderType }), LogLevel.Info);
+            Game1.activeClickableMenu = new SpecialOrdersBoard(orderType);
         }
     }
 }
