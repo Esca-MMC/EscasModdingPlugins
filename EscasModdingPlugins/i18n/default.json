@@ -1,25 +1,25 @@
 ﻿{
 	/* Console commands */
-	
+
 	"Commands.EMP.PlayerIsBusy": "Can't run this command because the player is busy. Please load a game, close any menus or text boxes, and otherwise make sure your character is free.",
 	"Commands.EMP.UnrecognizedCommand": "The command \"{{COMMAND}}\" is not recognized. For a list of commands, type \"EMP\" or \"EMP help\".",
-	"Commands.EMP.DefaultHelpText": "Runs one of EMP's console commands. Type \"EMP\" or \"EMP help\" for more information. You can also include a specific command's name, e.g. \"EMP help CustomBoard\".",
+	"Commands.EMP.Description": "Runs one of EMP's console commands. Type \"EMP\" or \"EMP help\" for more information. You can also include a specific command's name, e.g. \"EMP help CustomBoard\".",
 	"Commands.EMP.AvailableCommands": "Available commands:",
-	
+
 	/* Console commands - EMP CustomBoard */
-	
+
 	"Commands.EMP.CustomBoard.OpeningBoard": "Opening special orders board. Order type: \"{{ORDERTYPE}}\".",
-	"Commands.EMP.CustomBoard.1": "Opens a \"special orders board\" menu for a custom order type.",
-	"Commands.EMP.CustomBoard.2": "",
-	"Commands.EMP.CustomBoard.3": "Usage: EMP CustomBoard [OrderType]",
-	"Commands.EMP.CustomBoard.4": "Example: EMP CustomBoard Esca.EMP/MyCustomOrders",
-	"Commands.EMP.CustomBoard.5": "",
-	"Commands.EMP.CustomBoard.6": "- OrderType: The category of special orders to display. Case-sensitive.",
-	"Commands.EMP.CustomBoard.7": "   Optional. If no order type is included, the default order board will open.",
-	"Commands.EMP.CustomBoard.8": "   See the \"OrderType\" field in the \"Data/SpecialOrders\" asset.",
-	
+	"Commands.EMP.CustomBoard.Description.1": "Opens a \"special orders board\" menu for a custom order type.",
+	"Commands.EMP.CustomBoard.Description.2": "",
+	"Commands.EMP.CustomBoard.Description.3": "Usage: EMP CustomBoard [OrderType]",
+	"Commands.EMP.CustomBoard.Description.4": "Example: EMP CustomBoard Esca.EMP/MyCustomOrders",
+	"Commands.EMP.CustomBoard.Description.5": "",
+	"Commands.EMP.CustomBoard.Description.6": "- OrderType: The category of special orders to display. Case-sensitive.",
+	"Commands.EMP.CustomBoard.Description.7": "   Optional. If no order type is included, the default order board will open.",
+	"Commands.EMP.CustomBoard.Description.8": "   See the \"OrderType\" field in the \"Data/SpecialOrders\" asset.",
+
 	/* Generic Mod Config Menu (GMCM) */
-	
+
 	"Config.PlaceBedsAnywhere.Name": "Place beds anywhere",
 	"Config.PlaceBedsAnywhere.Description": "If enabled, you can place beds at any location.",
 	"Config.PlaceMiniFridgesAnywhere.Name": "Place mini-fridges anywhere",

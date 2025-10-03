@@ -37,7 +37,7 @@ namespace EscasModdingPlugins
             Helper = helper;
             Monitor = monitor;
 
-            helper.ConsoleCommands.Add("EMP", helper.Translation.Get("Commands.EMP.DefaultHelpText"), RunCommand); //NOTE: the translation used here won't change until the game is restarted
+            helper.ConsoleCommands.Add("EMP", helper.Translation.Get("Commands.EMP.Description"), RunCommand); //NOTE: the translation used here won't change until the game is restarted
             Initialized = true;
         }
 
@@ -63,7 +63,7 @@ namespace EscasModdingPlugins
                 foreach (string subCommand in SubCommands.Keys)
                 {
                     output += $"\n\nEMP {subCommand}";
-                    foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.", Helper.Translation))
+                    foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
                         output += $"\n   {line}"; //add each doc line with indentation
                     Monitor.Log(output, LogLevel.Info);
                 }
@@ -74,7 +74,7 @@ namespace EscasModdingPlugins
                 if (SubCommands.ContainsKey(subCommand)) //if the sub-command is valid
                 {
                     string output = $"EMP {subCommand}";
-                    foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.", Helper.Translation))
+                    foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
                         output += $"\n   {line}"; //add each doc line with indentation
                     Monitor.Log(output, LogLevel.Info);
                 }
