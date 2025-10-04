@@ -19,8 +19,10 @@ namespace EscasModdingPlugins
 
         /// <summary>True if this class is initialized and ready to use.</summary>
         private static bool Initialized { get; set; } = false;
-        /// <summary>The set of registered sub-commands. Keys are sub-command names. Values are callback methods that perform the sub-command.</summary>
+        /// <summary>The set of registered sub-commands. Keys are sub-command names (case-insensitive). Values are callback methods that perform the sub-command.</summary>
         private static Dictionary<string, Action<string, string[]>> SubCommands { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        /// <summary>The set of registered aliases for sub-commands. Keys are aliases (case-insensitive). Values are the sub-command that each alias represents.</summary>
+        private static Dictionary<string, string> SubCommandAliases { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
         /******************/
         /* Public methods */
@@ -42,11 +44,17 @@ namespace EscasModdingPlugins
         }
 
         /// <summary>Adds or replaces a sub-command within this shared console command.</summary>
-        /// <param name="name">The name of the sub-command. Case-insensitive.</param>
+        /// <param name="name">The name of the sub-command. Case-insensitive, but the default case is displayed in "help" documentation.</param>
         /// <param name="callback">The method that runs this command. Parameters are the sub-command's name and arguments.</param>
         /// <remarks>"Help" is a reserved term, and shouldn't be used as a sub-command's name or accepted as a first argument. This is case-insensitive.</remarks>
         public static void AddSubCommand(string name, Action<string, string[]> callback)
             => SubCommands[name] = callback;
+
+        /// <summary>Adds or replaces an alias for a sub-command, which can be used instead of the sub-command's primary name.</summary>
+        /// <param name="alias">The alias to use. Case-insensitive, but the default case is displayed in "help" documentation.</param>
+        /// <param name="subCommandName">The sub-command that this alias represents.</param>
+        public static void AddSubCommandAlias(string alias, string subCommandName)
+            => SubCommandAliases[alias] = subCommandName;
 
         /*******************/
         /* Private methods */
@@ -59,38 +67,64 @@ namespace EscasModdingPlugins
         {
             if (args == null || args.Length == 0 || (args.Length == 1 && string.Equals(args[0], "help", StringComparison.OrdinalIgnoreCase))) //format: "command" or "command help"
             {
-                string output = Helper.Translation.Get("Commands.EMP.AvailableCommands");
+                string output = Helper.Translation.Get("Commands.EMP.CommandInfo");
                 foreach (string subCommand in SubCommands.Keys)
                 {
-                    output += $"\n\nEMP {subCommand}";
+                    output += $"\n\nEMP {subCommand}"; //display command and sub-command
+
+                    var aliases = GetAliases(subCommand);
+                    if (aliases.Count > 0)
+                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
+
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
-                        output += $"\n   {line}"; //add each doc line with indentation
+                        output += $"\n   {line}"; //display each line of documentation
                 }
                 Monitor.Log(output, LogLevel.Info);
             }
             else if (args.Length >= 2 && string.Equals(args[0], "help", StringComparison.OrdinalIgnoreCase)) //format: "command help sub-command"
             {
                 string subCommand = args[1];
-                if (SubCommands.ContainsKey(subCommand)) //if the sub-command is valid
+                if (SubCommands.ContainsKey(subCommand) //if the sub-command is valid
+                || (SubCommandAliases.TryGetValue(subCommand, out subCommand) && SubCommands.ContainsKey(subCommand))) //OR if it's an alias of a valid command (overwrite it with the sub-command name)
                 {
+                    string output = Helper.Translation.Get("Commands.EMP.CommandInfo");
+
                     subCommand = SubCommands.Keys.FirstOrDefault(key => string.Equals(subCommand, key, StringComparison.OrdinalIgnoreCase)) ?? subCommand; //get the default capitalization of this sub-command
-                    string output = $"EMP {subCommand}";
+                    output += $"\n\nEMP {subCommand}"; //display command and sub-command
+
+                    var aliases = GetAliases(subCommand);
+                    if (aliases.Count > 0)
+                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
+
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
-                        output += $"\n   {line}"; //add each doc line with indentation
+                        output += $"\n   {line}"; //display each line of documentation
                     Monitor.Log(output, LogLevel.Info);
                 }
                 else //if the subcommand is invalid
-                    Monitor.Log(Helper.Translation.Get("Commands.EMP.UnrecognizedCommand", new { COMMAND = subCommand }), LogLevel.Info);
+                    Monitor.Log(Helper.Translation.Get("Commands.EMP.UnrecognizedCommand", new { COMMAND = args[1] }), LogLevel.Info); //NOTE: use args here; subCommand may be overwritten
 
             }
             else //format: "command sub-command arguments"
             {
                 string subCommand = args[0];
-                if (SubCommands.TryGetValue(subCommand, out var methods)) //if a valid sub-command was provided
+                if (SubCommands.TryGetValue(subCommand, out var methods) //if the sub-command is valid
+                || SubCommandAliases.TryGetValue(subCommand, out subCommand) && SubCommands.TryGetValue(subCommand, out methods)) //OR if it's an alias of a valid command (overwrite it with the sub-command name)
                     methods.Invoke(subCommand, args.Skip(1).ToArray()); //run the sub-command with any args after its name
-                else //if an invalid sub-command was provided
-                    Monitor.Log(Helper.Translation.Get("Commands.EMP.UnrecognizedCommand", new { COMMAND = subCommand }), LogLevel.Info);
+                else //if the sub-command is invalid
+                    Monitor.Log(Helper.Translation.Get("Commands.EMP.UnrecognizedCommand", new { COMMAND = args[0] }), LogLevel.Info); //NOTE: use args here; subCommand may be overwritten
             }
+        }
+
+        /// <summary>Gets all registered aliases for a sub-command.</summary>
+        /// <param name="subCommandName">The sub-command that the aliases represent.</param>
+        /// <returns></returns>
+        private static List<string> GetAliases(string subCommandName)
+        {
+            List<string> aliases = new();
+            foreach (var entry in SubCommandAliases)
+                if (string.Equals(subCommandName, entry.Value, StringComparison.OrdinalIgnoreCase)) //if the sub-command matches entry.Value, then entry.Key is an alias for the sub-command
+                    aliases.Add(entry.Key);
+            return aliases;
         }
 
         /// <summary>Gets each translated line of a multi-line i18n key, in the nearest applicable language to the current setting.</summary>

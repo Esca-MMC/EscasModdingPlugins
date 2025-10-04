@@ -37,6 +37,8 @@ namespace EscasModdingPlugins
 
             //initialize commands
             CommandHelper.AddSubCommand("OrderBoard", OrderBoard);
+            CommandHelper.AddSubCommandAlias("Board", "OrderBoard");
+            CommandHelper.AddSubCommandAlias("CustomBoard", "OrderBoard");
 
             Initialized = true;
         }

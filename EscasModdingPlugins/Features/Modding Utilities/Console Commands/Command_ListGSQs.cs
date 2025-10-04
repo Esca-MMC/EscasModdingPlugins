@@ -38,6 +38,9 @@ namespace EscasModdingPlugins
 
             //initialize commands
             CommandHelper.AddSubCommand("ListGSQs", ListGSQs);
+            CommandHelper.AddSubCommandAlias("ListGSQ", "ListGSQs");
+            CommandHelper.AddSubCommandAlias("GSQ", "ListGSQs");
+            CommandHelper.AddSubCommandAlias("GSQs", "ListGSQs");
 
             Initialized = true;
         }
