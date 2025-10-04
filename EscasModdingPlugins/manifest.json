@@ -1,8 +1,8 @@
 ﻿{
   "Name": "Esca's Modding Plugins",
   "Author": "Esca",
-  "Version": "1.6.2",
-  "Description": "Adds new data assets, map/tile properties, and features for other mods to use.",
+  "Version": "1.7.0",
+  "Description": "A framework that adds miscellaneous features for other mods to use.",
   "UniqueID": "Esca.EMP",
   "EntryDll": "EMP.dll",
   "MinimumApiVersion": "4.0.0",
