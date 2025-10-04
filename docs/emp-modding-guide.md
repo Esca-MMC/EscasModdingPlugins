@@ -193,7 +193,7 @@ Command | Summary
 --------|--------
 EMP ListGSQs | Lists all registered [game state queries (GSQs)](https://stardewvalleywiki.com/Modding:Game_state_queries) and their aliases, including GSQs added by mods.
 EMP ListMailFlags | Lists all mail flags set for the current local player. Useful for testing various mods that use letters, flags, etc.
-EMP OrderBoard | Opens a "special order board" menu for a specific special order type. Useful for testing new order types for [custom order boards](#custom-order-boards).
+EMP OrderBoard | Opens a "special order board" menu for a specific special order type (the "OrderType" field in [Data/SpecialOrders](https://stardewvalleywiki.com/Modding:Special_orders)). Useful for testing new order types for [custom order boards](#custom-order-boards).
 
 ## Content Patcher Tokens
 EMP adds the following custom tokens to Content Patcher. To enable them, you must do at least **one** of the following:
