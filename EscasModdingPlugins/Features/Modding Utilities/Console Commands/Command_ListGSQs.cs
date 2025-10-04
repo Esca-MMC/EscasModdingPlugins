@@ -70,7 +70,7 @@ namespace EscasModdingPlugins
                     aliases.Sort();
 
                     if (aliases.Count > 0)
-                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display the "aliases" line with comma-separated aliases
+                        output += $"\n  {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display the "aliases" line with comma-separated aliases
                 }
 
                 Monitor.Log($"{Helper.Translation.Get("Commands.EMP.ListGSQs.StartList")}{output}", LogLevel.Info);

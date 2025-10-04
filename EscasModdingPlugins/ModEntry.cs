@@ -36,7 +36,7 @@ namespace EscasModdingPlugins
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeGMCM;
 
             AssetHelper.Initialize(helper);
-            helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked_InitializeCommands;
+            helper.Events.GameLoop.UpdateTicked += GameLoop_UpdateTicked_InitializeCommandHelper;
             TileData.Monitor = Monitor;
 
             /****************************************/
@@ -71,6 +71,7 @@ namespace EscasModdingPlugins
             //console commands
             Command_OrderBoard.Initialize(helper, Monitor);
             Command_ListGSQs.Initialize(helper, Monitor);
+            Command_ListMailFlags.Initialize(helper, Monitor);
 
             //Content Patcher tokens
             helper.Events.GameLoop.GameLaunched += GameLoop_GameLaunched_InitializeCPTokens;
@@ -91,13 +92,13 @@ namespace EscasModdingPlugins
         /* Private methods */
         /*******************/
 
-        /// <summary>Initializes this mod's shared console command.</summary>
-        private void GameLoop_UpdateTicked_InitializeCommands(object sender, UpdateTickedEventArgs e)
+        /// <summary>Initializes this mod's shared console command helper.</summary>
+        private void GameLoop_UpdateTicked_InitializeCommandHelper(object sender, UpdateTickedEventArgs e)
         {
             if (e.Ticks >= 1) //wait for 1 tick (NOTE: if used before this, Helper.Translation (i18n) only appears to use the default language)
             {
                 CommandHelper.Initialize(Helper, Monitor);
-                Helper.Events.GameLoop.UpdateTicked -= GameLoop_UpdateTicked_InitializeCommands; //disable this event after running once
+                Helper.Events.GameLoop.UpdateTicked -= GameLoop_UpdateTicked_InitializeCommandHelper; //disable this event after running once
             }
         }
 

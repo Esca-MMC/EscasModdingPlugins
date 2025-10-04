@@ -74,10 +74,10 @@ namespace EscasModdingPlugins
 
                     var aliases = GetAliases(subCommand);
                     if (aliases.Count > 0)
-                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
+                        output += $"\n  {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
 
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
-                        output += $"\n   {line}"; //display each line of documentation
+                        output += $"\n  {line}"; //display each line of documentation
                 }
                 Monitor.Log(output, LogLevel.Info);
             }
@@ -94,10 +94,10 @@ namespace EscasModdingPlugins
 
                     var aliases = GetAliases(subCommand);
                     if (aliases.Count > 0)
-                        output += $"\n   {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
+                        output += $"\n  {Helper.Translation.Get("Commands.EMP.Aliases", new { ALIASES = string.Join(", ", aliases) })}"; //display aliases for this sub-command, if any
 
                     foreach (string line in GetMultilineTranslation($"Commands.EMP.{subCommand}.Description.", Helper.Translation))
-                        output += $"\n   {line}"; //display each line of documentation
+                        output += $"\n  {line}"; //display each line of documentation
                     Monitor.Log(output, LogLevel.Info);
                 }
                 else //if the subcommand is invalid
