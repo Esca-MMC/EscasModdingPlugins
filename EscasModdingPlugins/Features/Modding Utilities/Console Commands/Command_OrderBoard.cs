@@ -35,7 +35,7 @@ namespace EscasModdingPlugins
             Helper = helper;
             Monitor = monitor;
 
-            //initialize commands
+            //initialize command and aliases
             CommandHelper.AddSubCommand("OrderBoard", OrderBoard);
             CommandHelper.AddSubCommandAlias("Board", "OrderBoard");
             CommandHelper.AddSubCommandAlias("CustomBoard", "OrderBoard");

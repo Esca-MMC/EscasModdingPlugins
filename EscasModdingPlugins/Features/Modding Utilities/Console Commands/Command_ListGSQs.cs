@@ -36,7 +36,7 @@ namespace EscasModdingPlugins
             Helper = helper;
             Monitor = monitor;
 
-            //initialize commands
+            //initialize command and aliases
             CommandHelper.AddSubCommand("ListGSQs", ListGSQs);
             CommandHelper.AddSubCommandAlias("ListGSQ", "ListGSQs");
             CommandHelper.AddSubCommandAlias("GSQ", "ListGSQs");
