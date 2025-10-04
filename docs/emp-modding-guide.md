@@ -205,7 +205,9 @@ B) Whenever you use a token from EMP, add this "When" condition: `"HasMod": "Esc
 ### Game State Query
 The `Esca.EMP/GameStateQuery` token can be used to check a [game state query (GSQ)](https://stardewvalleywiki.com/Modding:Game_state_queries) in Content Patcher. It returns either "True" or "False". It's only active while a save is fully loaded.
 
-Note that this token uses the same update rates as other tokens. Its value will only change at the specified update rate for your patch (at the start of each day, by default). GSQs might also be slightly slower than other tokens, so if another token can achieve the same goal, use that instead.
+Unlike the game's "Condition" fields, this token uses the same [update rates](https://github.com/Pathoschild/StardewMods/blob/develop/ContentPatcher/docs/author-guide.md#update-rate) as other Content Patcher tokens. Its value can only change at your patch's update rate (e.g. the start of each day).
+
+This token can affect the game's performance more than others. If other tokens can achieve the same goal, please use those instead.
 
 Format example:
 
