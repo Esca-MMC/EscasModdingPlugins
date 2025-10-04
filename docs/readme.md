@@ -38,7 +38,7 @@ EMP also supports [spacechase0](https://github.com/spacechase0)'s [Generic Mod C
 ## Features for Modders
 The table below summarizes each feature EMP provides for other mods.
 
-**To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md).**
+**\*\*\* To use these features in your own mods, see the [EMP Modding Guide](emp-modding-guide.md). \*\*\***
 
 ### Game Mechanics
 Feature | Summary
@@ -59,7 +59,7 @@ Game State Queries | Adds new [game state queries](https://stardewvalleywiki.com
 Trigger Actions | Adds new [trigger actions](https://stardewvalleywiki.com/Modding:Trigger_actions) and triggers to `Data/TriggerActions` and related fields.
 
 ## Translation
-EMP supports translation of its Generic Mod Config Menu (GMCM) setting names and descriptions.
+EMP supports translation of its Generic Mod Config Menu (GMCM) setting names and descriptions, as well as its SMAPI console commands.
 
 The mod will load a file from the `EscasModdingPlugins/i18n` folder that matches the current language code. If no matching translation exists, it will use [`default.json`](https://github.com/Esca-MMC/EscasModdingPlugins/blob/master/EscasModdingPlugins/i18n/default.json).
 
