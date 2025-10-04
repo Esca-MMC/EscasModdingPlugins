@@ -16,6 +16,7 @@ See [the main readme](readme.md) for other information about EMP.
 * [Water Color](#water-color)
 
 ## Contents (Modding Utilities)
+* [Console Commands](#console-commands)
 * [Content Patcher Tokens](#content-patcher-tokens)
   * [Game State Query](#game-state-query)
   * [Mod Data](#mod-data)
@@ -182,6 +183,17 @@ To use this feature at a location, add the map property `Esca.EMP/WaterColor` an
 
 
 # Modding Utilities
+
+## Console Commands
+EMP adds the following commands to SMAPI's console. They're all available under the shared console command "EMP".
+
+Type "EMP" to see every command's full documentation, or "EMP help [command name]" for a specific command. The documentation can also be translated in the mod's i18n folder.
+
+Command | Summary
+--------|--------
+EMP ListGSQs | Lists all registered [game state queries (GSQs)](https://stardewvalleywiki.com/Modding:Game_state_queries) and their aliases, including GSQs added by mods.
+EMP ListMailFlags | Lists all mail flags set for the current local player. Useful for testing various mods that use letters, flags, etc.
+EMP OrderBoard | Opens a "special order board" menu for a specific special order type. Useful for testing new order types for [custom order boards](#custom-order-boards).
 
 ## Content Patcher Tokens
 EMP adds the following custom tokens to Content Patcher. To enable them, you must do at least **one** of the following:

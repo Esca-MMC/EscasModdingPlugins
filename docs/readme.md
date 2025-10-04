@@ -53,6 +53,7 @@ Water Color | Change the color of all water at a location.
 ### Modding Utilities
 Feature | Summary
 --------|--------
+Console Commands | Adds new SMAPI console commands, e.g. to help test mods.
 Content Patcher Tokens | Adds new tokens to [Content Patcher](https://github.com/Pathoschild/StardewMods/tree/develop/ContentPatcher).
 Game State Queries | Adds new [game state queries](https://stardewvalleywiki.com/Modding:Game_state_queries) (GSQs) to Stardew's "condition" fields.
 Trigger Actions | Adds new [trigger actions](https://stardewvalleywiki.com/Modding:Trigger_actions) and triggers to `Data/TriggerActions` and related fields.
