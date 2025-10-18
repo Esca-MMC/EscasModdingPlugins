@@ -140,7 +140,7 @@ namespace EscasModdingPlugins
         private static IEnumerable<string> GetMultilineTranslation(string key, ITranslationHelper translationHelper)
         {
             string line1key = $"{key}1";
-            if (!translationHelper.ContainsKey(line1key)) //if no applicable i18n has this key
+            if (translationHelper.Get(line1key)?.HasValue() != true) //if no applicable i18n has this key
                 yield break; //return an empty set
 
             var translationsForLine1 = translationHelper.GetInAllLocales(line1key, false);
