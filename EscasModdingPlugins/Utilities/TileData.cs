@@ -19,7 +19,7 @@ namespace EscasModdingPlugins
         /// <summary>The set of <see cref="GameLocation"/> names where this data is applicable.</summary>
         public List<string> Locations { get; set; } = new List<string>();
         /// <summary>The set of tiles where this data is applicable.</summary>
-        public List<JsonRectangle> TileAreas { get; } = new List<JsonRectangle>();
+        public List<JsonRectangle> TileAreas { get; set; } = new List<JsonRectangle>();
         /// <summary>The relative priority of this data. Tiles affected by multiple data instances will use one with the highest priority.</summary>
         public int Priority { get; set; } = 0;
 
