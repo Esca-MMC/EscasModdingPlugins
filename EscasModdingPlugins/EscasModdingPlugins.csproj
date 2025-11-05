@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<AssemblyName>EMP</AssemblyName>
 		<RootNamespace>EMP</RootNamespace>
-		<Version>1.7.1</Version>
+		<Version>1.7.2</Version>
 		<TargetFramework>net6.0</TargetFramework>
 		<LangVersion>Latest</LangVersion>
 		<EnableHarmony>true</EnableHarmony>
