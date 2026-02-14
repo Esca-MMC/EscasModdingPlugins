@@ -535,7 +535,7 @@ Log output: `[00:00:00 TRACE  Esca's Modding Plugins] Esca.TestMod: Save loaded.
 
 The `Esca.EMP_TimeChanged` trigger happens when the in-game time changes.
 
-Note that this does NOT happen when a save is created or loaded, i.e. this won't trigger the first time it's 6:00 AM. To do that, combine this with the [Save Loaded](#save-loaded) trigger (see below). Multiple triggers can be used by separating them with spaces.
+Note that this does NOT happen when a new day starts or a saved game loads, i.e. this won't trigger at 6:00 AM. To do that, combine this with the "DayStarted" trigger (see below). Multiple triggers can be used by separating them with spaces.
 
 Below is an example of a trigger action that displays a message whenever the in-game time changes, including when a save is created or loaded.
 
@@ -549,7 +549,7 @@ Below is an example of a trigger action that displays a message whenever the in-
       "Entries": {
         "{{ModId}}_LogTime": {
             "Id": "{{ModId}}_LogTime",
-            "Trigger": "Esca.EMP_SaveLoaded Esca.EMP_TimeChanged",
+            "Trigger": "DayStarted Esca.EMP_TimeChanged",
             "Action": "Esca.EMP_LogMessage Info {{ModId}}: The in-game time is now {{Time}}.",
             "MarkActionApplied": false
         }
