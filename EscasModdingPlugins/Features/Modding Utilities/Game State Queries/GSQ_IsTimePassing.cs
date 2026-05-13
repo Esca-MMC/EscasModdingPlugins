@@ -3,9 +3,9 @@ using StardewValley;
 
 namespace EscasModdingPlugins
 {
-    /// <summary>A game state query initializer for the "should time pass" query.</summary>
+    /// <summary>A game state query initializer for the "is time passing" query.</summary>
     /// <remarks>
-    /// Format: Esca.EMP_SHOULD_TIME_PASS
+    /// Format: Esca.EMP_IS_TIME_PASSING
     /// </remarks>
     public class GSQ_IsTimePassing
     {
