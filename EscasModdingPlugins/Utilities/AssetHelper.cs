@@ -20,19 +20,19 @@ namespace EscasModdingPlugins
         /// <summary>True if this class is initialized and ready to use.</summary>
         private static bool Initialized = false;
         /// <summary>A set of asset names and constructors for their default instances.</summary>
-        private static Dictionary<string, Func<object>> Defaults = new Dictionary<string, Func<object>>();
+        private static readonly Dictionary<string, Func<object>> Defaults = new(StringComparer.OrdinalIgnoreCase);
         /// <summary>A set of asset names and their most recently updated instances.</summary>
-        private static Dictionary<string, object> Cache = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> Cache = new(StringComparer.OrdinalIgnoreCase);
         /// <summary>This mod's SMAPI helper instance.</summary>
         private static IModHelper Helper = null;
         /// <summary>A lock used to prevent multiple threads simultaneously loading data.</summary>
-        private static object LoadLock = new();
+        private static readonly object LoadLock = new();
 
         /******************/
         /* Public methods */
         /******************/
 
-        /// <summary>Performs required setup tasks for this class.</summary>
+        /// <summary>Perform required setup tasks for this class.</summary>
         /// <param name="helper">This mod's SMAPI helper instance.</param>
         internal static void Initialize(IModHelper helper)
         {
@@ -44,17 +44,15 @@ namespace EscasModdingPlugins
 
             //enable SMAPI events
             helper.Events.Content.AssetRequested += AssetRequested_LoadDefaults;
-            helper.Events.GameLoop.DayStarted += DayStarted_ClearCache;
-            helper.Events.GameLoop.TimeChanged += TimeChanged_ClearCache;
-            helper.Events.Player.Warped += Warped_ClearCache;
+            helper.Events.Content.AssetsInvalidated += Content_AssetsInvalidated;
 
             Initialized = true;
         }
 
-        /// <summary>Get the most recent version of a game asset.</summary>
+        /// <summary>Get the most recent version of a game asset. Automatically uses a cache system when possible.</summary>
         /// <typeparam name="T">The asset's type.</typeparam>
         /// <param name="assetName">The asset's name, e.g. "Characters/Abigail".</param>
-        /// <returns>The latest available version of the asset.</returns>
+        /// <returns>The most recent version of the asset.</returns>
         internal static T GetAsset<T>(string assetName)
         {
             if (Cache.TryGetValue(assetName, out object asset)) //if this asset has a cached version
@@ -73,77 +71,59 @@ namespace EscasModdingPlugins
             }
         }
 
-        /// <summary>Gets the default instance of the named asset if one is available.</summary>
+        /// <summary>Get the default instance of the named asset if one is available.</summary>
         /// <typeparam name="T">The asset's type.</typeparam>
-        /// <param name="normalizedAssetName">The asset's normalized name. See <see cref="IAssetInfo.AssetName"/> or <see cref="IContentHelper.NormalizeAssetName(string)"/>.</param>
+        /// <param name="assetName">The asset's name, e.g. "Characters/Abigail".</param>
         /// <param name="defaultAsset">A default instance of the asset.</param>
         /// <returns>True if a default instance exists for this asset. False otherwise.</returns>
-        internal static bool TryGetDefault<T>(string normalizedAssetName, out T defaultAsset)
+        internal static bool TryGetDefault<T>(string assetName, out T defaultAsset)
         {
-            if (Defaults.TryGetValue(normalizedAssetName, out Func<object> getNewDefaultAsset)) //if this asset has a default to load
+            if (Defaults.TryGetValue(assetName, out Func<object> getNewDefaultAsset)) //if this asset has a default to load
             {
                 defaultAsset = (T)getNewDefaultAsset.Invoke(); //generate a new default instance of this asset, cast it as the given type, and return it
                 return true; //success
             }
             else //if this asset does NOT have a default to load
             {
-                defaultAsset = default(T); //return the given type's default value (e.g. null)
+                defaultAsset = default; //return the given type's default value (e.g. null)
                 return false; //failure
             }
         }
 
-        /// <summary>Sets a default instance generator for the named asset, which allows this class to create and manage the asset.</summary>
+        /// <summary>Set a default instance generator for the named asset, which allows this class to create and manage the asset.</summary>
         /// <param name="assetName">The asset name, e.g. "Characters/Abigail".</param>
         /// <param name="getNewDefaultAsset">A method that returns a new default instance for this asset, e.g. a blank dictionary with the appropriate key/value types.</param>
-        internal static void SetDefault(string assetName, Func<object> getNewDefaultAsset)
-        {
-            Defaults[Helper.GameContent.ParseAssetName(assetName).Name] = getNewDefaultAsset; //normalize the asset name and store the default instance
-        }
+        internal static void SetDefault(string assetName, Func<object> getNewDefaultAsset) 
+            => Defaults[assetName] = getNewDefaultAsset; //normalize the asset name and store the default instance
 
-        /// <summary>Checks whether this asset name has a default instance to load.</summary>
-        /// <param name="normalizedAssetName">The asset's normalized name. See <see cref="IAssetInfo.AssetName"/> or <see cref="IContentHelper.NormalizeAssetName(string)"/>.</param>
-        /// <returns>True if a default instance exists for this asset. False otherwise.</returns>
-        internal static bool HasDefault(string normalizedAssetName)
-        {
-            return Defaults.ContainsKey(normalizedAssetName); //return true if the asset name has a default
-        }
-
-        /// <summary>Removes an asset from the cache, allowing a more recent version to be loaded when needed.</summary>
+        /// <summary>Check whether this asset name has a default instance to load.</summary>
         /// <param name="assetName">The asset's name, e.g. "Characters/Abigail".</param>
-        internal static void Invalidate(string assetName)
-        {
-            Cache.Remove(assetName); //remove this asset's cached version if it exists
-        }
+        /// <returns>True if a default instance exists for this asset. False otherwise.</returns>
+        internal static bool HasDefault(string assetName) => Defaults.ContainsKey(assetName);
+
+        /// <summary>Remove an asset from the cache, if applicable, allowing a more recent version to be loaded when needed.</summary>
+        /// <param name="assetName">The asset's name, e.g. "Characters/Abigail".</param>
+        /// <returns>True if the asset had a cached version that was removed. False if the asset was not currently cached.</returns>
+        internal static bool Invalidate(string assetName) => Cache.Remove(assetName);
 
         /****************/
         /* SMAPI events */
         /****************/
 
-        /// <summary>Clears all cached assets at the start of each in-game day.</summary>
-        private static void DayStarted_ClearCache(object sender, StardewModdingAPI.Events.DayStartedEventArgs e)
-        {
-            Cache.Clear();
-        }
-
-        /// <summary>Clears all cached assets when the local player changes location.</summary>
-        private static void Warped_ClearCache(object sender, StardewModdingAPI.Events.WarpedEventArgs e)
-        {
-            Cache.Clear();
-        }
-
-        /// <summary>Clears all cached assets every 10 in-game minutes.</summary>
-        private static void TimeChanged_ClearCache(object sender, StardewModdingAPI.Events.TimeChangedEventArgs e)
-        {
-            Cache.Clear();
-        }
-
-        /// <summary>Loads default instances of any new assets created by this mod.</summary>
+        /// <summary>Load default instances of any new assets created by this mod.</summary>
         private static void AssetRequested_LoadDefaults(object sender, StardewModdingAPI.Events.AssetRequestedEventArgs e)
         {
-            if (TryGetDefault(e.Name.Name, out object defaultAsset)) //if a default instance exists for this asset
+            if (TryGetDefault(e.Name.BaseName, out object defaultAsset)) //if a default instance exists for this asset
             {
                 e.LoadFrom(() => defaultAsset, StardewModdingAPI.Events.AssetLoadPriority.Medium, null);
             }
+        }
+
+        /// <summary>Clear cached assets whenever they're invalidated in the game's content system.</summary>
+        private static void Content_AssetsInvalidated(object sender, StardewModdingAPI.Events.AssetsInvalidatedEventArgs e)
+        {
+            foreach (IAssetName name in e.Names)
+                Invalidate(name.BaseName);
         }
     }
 }
