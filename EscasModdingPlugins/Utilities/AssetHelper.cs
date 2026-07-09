@@ -93,7 +93,7 @@ namespace EscasModdingPlugins
         /// <summary>Set a default instance generator for the named asset, which allows this class to create and manage the asset.</summary>
         /// <param name="assetName">The asset name, e.g. "Characters/Abigail".</param>
         /// <param name="getNewDefaultAsset">A method that returns a new default instance for this asset, e.g. a blank dictionary with the appropriate key/value types.</param>
-        internal static void SetDefault(string assetName, Func<object> getNewDefaultAsset) 
+        internal static void SetDefault(string assetName, Func<object> getNewDefaultAsset)
             => Defaults[assetName] = getNewDefaultAsset; //normalize the asset name and store the default instance
 
         /// <summary>Check whether this asset name has a default instance to load.</summary>
